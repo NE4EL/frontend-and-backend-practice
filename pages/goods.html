@@ -4,37 +4,44 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Workplace (g)</title>
+
+    <link rel="stylesheet" href="../style/styles.css">
 </head>
 <body>
-    <div id="header">HEADER</div>
-    <div id="menu">
-        <ul>
-            <li><a href="../index.html">Главная</a></li>
-            <li><a href="news.html">Новости</a></li>
-            <li><a href="practices.html">Практики</a></li> 
-            <li><a href="goods.html">Товары</a></li>
-            <li><a href="contacts.html">Контакты</a></li>
-        </ul>
-    </div>
-    <div id="content">
-        <div>
-            <img src="../images/goods1.jpg" alt="PC" width="250" height="250">
-            <p>Товар 1</p>
-            <p>Цена товара 1</p>
+    <div class="page-container">
+        <div class="header">HEADER</div>
+        <div class="nav">
+            <ul class="nav-list">
+                <li class="nav-item"><a class="nav-link" href="../index.html">Главная</a></li>
+                <li class="nav-item"><a class="nav-link" href="news.html">Новости</a></li>
+                <li class="nav-item"><a class="nav-link" href="practices.html">Практики</a></li> 
+                <li class="nav-item"><a class="nav-link" href="goods.html">Товары</a></li>
+                <li class="nav-item"><a class="nav-link" href="contacts.html">Контакты</a></li>
+            </ul>
         </div>
+        <div class="content">
+            <h2 class="section-title">Наши товары</h2>
+            <div class="goods-content">
+                <div class="goods-card">
+                    <img class="goods-photo" src="../images/goods1.jpg" alt="PC" width="250" height="250">
+                    <p class="goods-title">Товар 1</p>
+                    <p class="goods-salle">Цена товара 1</p>
+                </div>
 
-        <div>
-            <img src="../images/goods2.jpg" alt="Vkusno" width="250" height="250">
-            <p>Товар 2</p>
-            <p>Цена товара 2</p>
-        </div>
+                <div class="goods-card">
+                    <img class="goods-photo" src="../images/goods2.jpg" alt="Vkusno" width="250" height="250">
+                    <p class="goods-title">Товар 2</p>
+                    <p class="goods-salle">Цена товара 2</p>
+                </div>
 
-        <div>
-            <img src="../images/goods3.jpg" alt="Wazzuuup" width="250" height="250">
-            <p>Товар 3</p>
-            <p>Цена товара 3</p>
+                <div class="goods-card">
+                    <img class="goods-photo" src="../images/goods3.jpg" alt="Wazzuuup" width="250" height="250">
+                    <p class="goods-title">Товар 3</p>
+                    <p class="goods-salle">Цена товара 3</p>
+                </div>
+            </div>
         </div>
+        <div class="footer">FOOTER</div>
     </div>
-    <div id="footer">FOOTER</div>
 </body>
 </html>

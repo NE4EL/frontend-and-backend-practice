@@ -4,49 +4,64 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Workplace (i)</title>
+    
+    <link rel="stylesheet" href="style/styles.css">
 </head>
 <body>
-    <div id="header">HEADER</div>
-    <div id="menu">
-        <ul>
-            <li><a href="index.html">Главная</a></li>
-            <li><a href="pages/news.html">Новости</a></li>
-            <li><a href="pages/practices.html">Практики</a></li> 
-            <li><a href="pages/goods.html">Товары</a></li>
-            <li><a href="pages/contacts.html">Контакты</a></li>
-        </ul>
-    </div>
-    <div id="content">
-        <p>Info about auhtor</p>
-        <img src="images/Frame.png" alt="Фото автора" width="250" height="250">
-        <p>Evtushenko Egor Maksimovitch</p>
-        <p>ЭФБО-08-24</p>
-        <p>Обо мне: Я не родился в Москве, а в Красноярске. 
-            Глупость не ударила в голову. 
-            В четыре активно не ругался. 
-            Потом школа, в ней не было форм, драк, клея. 
-            Так я становился сильней. 
-            Воровал деньги мой друг.</p>
-        <div>Навык 1</div>
-        <div>Навык 2</div>
-        <div>Навык 3</div> 
-        <div>Навык 4</div>
-        <div>
-            Мой опыт работы:
-            <div>
-                Опыт 1<br>
-                Работал фантазёром. Сочинял и праздновал.
+    <div class="page-container">
+        <div class="header">HEADER</div>
+        <div class="nav">
+            <ul class="nav-list">
+                <li class="nav-item"><a class="nav-link" href="index.html">Главная</a></li>
+                <li class="nav-item"><a class="nav-link" href="pages/news.html">Новости</a></li>
+                <li class="nav-item"><a class="nav-link" href="pages/practices.html">Практики</a></li> 
+                <li class="nav-item"><a class="nav-link" href="pages/goods.html">Товары</a></li>
+                <li class="nav-item"><a class="nav-link" href="pages/contacts.html">Контакты</a></li>
+            </ul>
+        </div>
+        <div class="content">
+            <div class="profile-header">
+                <h1 class="profile-title">Информация об авторе</h1>
+                <img class="profile-photo" src="images/Frame.png" alt="Фото автора" width="250" height="250">
+                <h2 class="profile-name">Evtushenko Egor Maksimovitch</h2>
+                <p class="profile-group">ЭФБО-08-24</p>
             </div>
-            <div>
-                Опыт 2<br>
-                Работал воровством. Воровал и продавал.
+
+            <div class="about-me">
+                <p>Обо мне: Я не родился в Москве, а в Красноярске. 
+                    Глупость не ударила в голову. 
+                    В четыре активно не ругался. 
+                    Потом школа, в ней не было форм, драк, клея. 
+                    Так я становился сильней. 
+                    Воровал деньги мой друг.</p>
             </div>
-            <div>
-                Опыт 3<br>
-                Работал рэпером. Читал и пел.
+
+            <div class="skills-container">
+                <div>Навык 1</div>
+                <div>Навык 2</div>
+                <div>Навык 3</div> 
+                <div>Навык 4</div>
+            </div>
+
+            <div class="experience-section">
+                <h2 class="section-title">Мой опыт работы:</h2>
+                <div class="experience-card">
+                    <h3 class="experience-title">Опыт 0</h3>
+                    <p class="experience-desc">Работал фантазёром. Сочинял и праздновал.</p>
+                </div>
+
+                <div class="experience-card">
+                    <h3 class="experience-title">Опыт 1</h3>
+                    <p class="experience-desc">Работал воровством. Воровал и продавал.</p>
+                </div>
+
+                <div class="experience-card">
+                    <h3 class="experience-title">Опыт 2</h3>
+                    <p class="experience-desc">Работал рэпером. Читал и пел.</p>
+                </div>
             </div>
         </div>
+        <div class="footer">FOOTER</div>
     </div>
-    <div id="footer">FOOTER</div>
 </body>
 </html>
