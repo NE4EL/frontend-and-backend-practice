@@ -294,11 +294,68 @@ body {
 .pick-up {
     font-size: 14px;
     text-align: center;
-    background: #00f2fe;
+    background: linear-gradient(135deg, #61376d 0%, #b921c1 100%); /* Темный градиентный фон */
+
+    color: white;
     padding: 15px;
     margin: 20px 0;
-    border-radius: 15px;
+    border-radius: 20px;
+
+    border: none;        /* убираем серую рамку браузера */
+    outline: none;       /* убираем контур при клике */
+    box-shadow: none;    /* убираем тени */
+    appearance: none;    /* сброс нативного стиля */
+    width: 25%;
+
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.pick-up:hover {
+    transform: translateY(-5px); /* поднимаем кнопку вверх */
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3); /* добавляем тень для объёма */
+}
+
+/* === Практика === */
+.practice-section {
+    margin-top: 50px;
+    justify-content: center;
+    margin: 0px;
+    padding: 0px;
+    gap: 25px; /* Расстояние между элементами */
+}
+
+.practice-info {
+    background: white;
+    padding: 25px;
+    margin: 25px 0;
+    border-radius: 14px;
+    border-left: 4px solid #3fcee1; /* Синяя полоса слева */
     box-shadow: 0 5px 20px rgba(0,0,0,0.08); /* Легкая тень */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+}
+
+.practice-info:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3); /* добавляем тень для объёма */
+}
+
+.practice-title {
+    font-size: 35px;
+    text-align: center;
+    margin: 5px 0; /* Вертикальные отступы */
+    margin-bottom: 40px;
+}
+
+.practice-title-middle {
+    font-size: 15px;
+    margin: 5px 0; /* Вертикальные отступы */
+    color: #7f8c8d;
+}
+
+.practice-text-date {
+    font-size: 10px;
+    margin: 10px 0; /* Вертикальные отступы */
 }
 
 /* ===== ФУТЕР ===== */
