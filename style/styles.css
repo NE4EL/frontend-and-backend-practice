@@ -3,7 +3,7 @@ body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Современный шрифт для лучшей читаемости */
     margin: 0; /* Убираем стандартные отступы браузера */
     padding: 0; /* Убираем стандартные внутренние отступы */
-    background: linear-gradient(135deg, #417ba4 0%, #4b95a2 100%); /* Красивый градиентный фон всей страницы */
+    background: linear-gradient(135deg, #497ca0 0%, #48b4c7 100%); /* Красивый градиентный фон всей страницы */
     min-height: 100vh; /* Минимальная высота равна высоте окна браузера */
 }
 
@@ -14,23 +14,37 @@ body {
     background: white; /* Белый фон для основного содержимого */
     min-height: 100vh; /* Минимальная высота равна высоте окна браузера */
     box-shadow: 0 0 30px rgba(0,0,0,0.1); /* Легкая тень вокруг всего контента */
+
+    /* Новое: Сеточный макет для семантических областей */
+    display: grid;
+    grid-template-rows: auto auto 1fr auto;
+    grid-template-areas: 
+        "header"
+        "nav"
+        "main"
+        "footer";
 }
 
 /* ===== ШАПКА ===== */
 .header {
-    background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%); /* Темный градиентный фон */
+    background: linear-gradient(135deg, #537290 0%, #679acd 100%); /* Темный градиентный фон */
     color: white; /* Белый цвет текста */
     text-align: center; /* Выравнивание текста по центру */
     padding: 30px; /* Внутренние отступы со всех сторон */
     font-size: 28px; /* Размер шрифта */
     font-weight: 300; /* Легкое начертание шрифта */
     letter-spacing: 2px; /* Расстояние между буквами */
+
+    grid-area: header;
 }
+
 
 /* ===== НАВИГАЦИЯ ===== */
 .nav {
-    background: #2c3e50; /* Темно-синий фон навигации */
+    background: linear-gradient(135deg, #537290 0%, #679acd 100%); /* Темный градиентный фон */
     padding: 20px 0; /* Вертикальные отступы */
+
+    grid-area: nav;
 }
 
 .nav-list {
@@ -61,10 +75,12 @@ body {
 }
 
 /* ===== ОСНОВНОЙ КОНТЕНТ ===== */
-.content {
+main.content {
     padding: 40px; /* Внутренние отступы контента */
     max-width: 900px; /* Максимальная ширина контента */
     margin: 0 auto; /* Центрирование контента */
+
+    grid-area: main;
 }
 
 /* ===== ГЛАВНАЯ СТРАНИЦА ===== */
@@ -115,11 +131,18 @@ body {
 
 /* ===== НАВЫКИ ===== */
 .skills-container {
-    display: flex; /* Горизонтальное расположение навыков */
     justify-content: center; /* Выравнивание по центру */
+    text-align: center;
     flex-wrap: wrap; /* Перенос на новую строку при необходимости */
     gap: 15px; /* Расстояние между навыками */
     margin: 30px 0; /* Вертикальные отступы */
+}
+
+.skills-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 15px;
+    margin: 20px 0;
 }
 
 .skill-tag {
@@ -141,6 +164,7 @@ body {
 /* ===== ОПЫТ РАБОТЫ ===== */
 .experience-section {
     margin-top: 50px; /* Отступ сверху */
+
 }
 
 .section-title {
@@ -149,6 +173,12 @@ body {
     text-align: center; /* Выравнивание по центру */
     margin-bottom: 30px; /* Отступ снизу */
     font-weight: 300; /* Легкое начертание шрифта */
+}
+
+.experience-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
 }
 
 .experience-card {
@@ -179,6 +209,24 @@ body {
 }
 
 /* ===== Новости ===== */
+.news-section {
+    margin-top: 50px; /* Отступ сверху */
+}
+
+.news-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.section-title-news {
+    font-size: 28px; /* Размер шрифта заголовка секции */
+    color: #2c3e50; /* Темно-синий цвет текста */
+    text-align: center; /* Выравнивание по центру */
+    margin-bottom: 30px; /* Отступ снизу */
+    font-weight: 300; /* Легкое начертание шрифта */
+}
+
 .news-card {
     background: white; /* Белый фон карточки */
     padding: 25px; /* Внутренние отступы */
@@ -187,6 +235,7 @@ body {
     box-shadow: 0 5px 20px rgba(0,0,0,0.08); /* Легкая тень */
     border-left: 4px solid #3fcee1; /* Синяя полоса слева */
     transition: transform 0.3s ease; /* Плавная анимация трансформации */
+    width: 300px;
 }
 
 .news-card:hover {
@@ -194,15 +243,13 @@ body {
 }
 
 .news-title {
-    font-size: 28px;
-    color: #2c3e50;
-    margin-bottom: 10px; /* Отступ снизу */
-    margin-left: 10px;
-    font-weight: 300; /* Легкое начертание шрифта */
+    font-size: 20px; /* Размер шрифта заголовка опыта */
+    color: #2c3e50; /* Темно-синий цвет текста */
+    margin: 0 0 10px 0; /* Отступ снизу */
+    font-weight: 600; /* Жирный шрифт */
 }
 
 .news-name {
-    font-size: 14px;
     color: #7f8c8d;
     line-height: 1.6; /* Межстрочный интервал */
     margin-bottom: 10px; 
@@ -360,9 +407,37 @@ body {
 
 /* ===== ФУТЕР ===== */
 .footer {
-    background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%); /* Темный градиентный фон */
+    background: linear-gradient(135deg, #537290 0%, #679acd 100%); /* Темный градиентный фон */
     color: white; /* Белый цвет текста */
     text-align: center; /* Выравнивание по центру */
     padding: 30px; /* Внутренние отступы */
     margin-top: 50px; /* Отступ сверху */
+
+    grid-area: footer;
+}
+
+/* ===== АДАПТИВНОСТЬ ===== */
+/* Новое: Медиа-запросы для мобильных устройств */
+@media (max-width: 768px) {
+    .nav-list {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .skills-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .experience-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .news-grid  {
+        grid-template-columns: 1fr;
+    }
+    
+    main.content {
+        padding: 20px;
+    }
+
 }

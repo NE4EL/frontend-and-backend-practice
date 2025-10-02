@@ -9,8 +9,10 @@
 </head>
 <body>
     <div class="page-container">
-        <div class="header">HEADER</div>
-        <div class="nav">
+        <header class="header">
+            <h1>HEADER</h1>
+        </header>
+        <nav class="nav">
             <ul class="nav-list">
                 <li class="nav-item"><a class="nav-link" href="index.html">Главная</a></li>
                 <li class="nav-item"><a class="nav-link" href="pages/news.html">Новости</a></li>
@@ -18,50 +20,57 @@
                 <li class="nav-item"><a class="nav-link" href="pages/goods.html">Товары</a></li>
                 <li class="nav-item"><a class="nav-link" href="pages/contacts.html">Контакты</a></li>
             </ul>
-        </div>
-        <div class="content">
-            <div class="profile-header">
+        </nav>
+        <main class="content">
+            <article class="profile-header">
                 <h1 class="profile-title">Информация об авторе</h1>
                 <img class="profile-photo" src="images/Frame.png" alt="Фото автора" width="250" height="250">
                 <h2 class="profile-name">Evtushenko Egor Maksimovitch</h2>
                 <p class="profile-group">ЭФБО-08-24</p>
-            </div>
+            </article>
 
-            <div class="about-me">
+            <section class="about-me">
                 <p>Обо мне: Я не родился в Москве, а в Красноярске. 
                     Глупость не ударила в голову. 
                     В четыре активно не ругался. 
                     Потом школа, в ней не было форм, драк, клея. 
                     Так я становился сильней. 
                     Воровал деньги мой друг.</p>
-            </div>
+            </section>
 
-            <div class="skills-container">
-                <div>Навык 1</div>
-                <div>Навык 2</div>
-                <div>Навык 3</div> 
-                <div>Навык 4</div>
-            </div>
+            <section class="skills-container"> <!-- Было: <div class="skills-container"> -->
+                <h2 class="skills-title">Мои навыки</h2> <!-- Добавили заголовок для семантики -->
+                <div class="skills-grid"> <!-- Обертка для Grid -->
+                    <div class="skill-tag">Навык 1</div>
+                    <div class="skill-tag">Навык 2</div>
+                    <div class="skill-tag">Навык 3</div>
+                    <div class="skill-tag">Навык 4</div>
+                </div>
+            </section>
 
-            <div class="experience-section">
+            <section class="experience-section">
                 <h2 class="section-title">Мой опыт работы:</h2>
-                <div class="experience-card">
-                    <h3 class="experience-title">Опыт 0</h3>
-                    <p class="experience-desc">Работал фантазёром. Сочинял и праздновал.</p>
-                </div>
+                <div class="experience-grid">
+                    <article class="experience-card">
+                        <h3 class="experience-title">Опыт 0</h3>
+                        <p class="experience-desc">Работал фантазёром. Сочинял и праздновал.</p>
+                    </article>
 
-                <div class="experience-card">
-                    <h3 class="experience-title">Опыт 1</h3>
-                    <p class="experience-desc">Работал воровством. Воровал и продавал.</p>
-                </div>
+                    <article class="experience-card">
+                        <h3 class="experience-title">Опыт 1</h3>
+                        <p class="experience-desc">Работал воровством. Воровал и продавал.</p>
+                    </article>
 
-                <div class="experience-card">
-                    <h3 class="experience-title">Опыт 2</h3>
-                    <p class="experience-desc">Работал рэпером. Читал и пел.</p>
+                    <article class="experience-card">
+                        <h3 class="experience-title">Опыт 2</h3>
+                        <p class="experience-desc">Работал рэпером. Читал и пел.</p>
+                    </article>
                 </div>
-            </div>
-        </div>
-        <div class="footer">FOOTERRR</div>
+            </section>
+        </main>
+        <footer class="footer">
+            <p>FOOTER</p>
+        </footer>
     </div>
 </body>
 </html>
