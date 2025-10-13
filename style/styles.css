@@ -17,7 +17,7 @@ body {
 
     /* Новое: Сеточный макет для семантических областей */
     display: grid;
-    grid-template-rows: auto auto 1fr auto;
+    grid-template-rows: auto auto auto auto;
     grid-template-areas: 
         "header"
         "nav"
@@ -78,10 +78,11 @@ body {
 main.content {
     padding: 40px; /* Внутренние отступы контента */
     max-width: 900px; /* Максимальная ширина контента */
-    margin: 0 auto; /* Центрирование контента */
+    margin: 0 auto;
 
     grid-area: main;
 }
+
 
 /* ===== ГЛАВНАЯ СТРАНИЦА ===== */
 .profile-header {
@@ -209,14 +210,18 @@ main.content {
 }
 
 /* ===== Новости ===== */
+
+
 .news-section {
     margin-top: 50px; /* Отступ сверху */
+    margin-left: 20px;
+    margin-right: 20px;
 }
 
 .news-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 20px;
+    gap: 20px; 
 }
 
 .section-title-news {
@@ -235,7 +240,6 @@ main.content {
     box-shadow: 0 5px 20px rgba(0,0,0,0.08); /* Легкая тень */
     border-left: 4px solid #3fcee1; /* Синяя полоса слева */
     transition: transform 0.3s ease; /* Плавная анимация трансформации */
-    width: 300px;
 }
 
 .news-card:hover {
@@ -262,16 +266,24 @@ main.content {
 }
 
 /* ===== Товары ===== */
-.goods-content {
+.goods-section {
+    margin-top: 50px; /* Отступ сверху */
+    margin-left: 20px;
+    margin-right: 20px;
+}
+
+.goods-grid {
     margin-top: 50px; /* Отступ сверху */
     margin: 0; /* Убираем внешние отступы */
     padding: 0; /* Убираем внутренние отступы */
-    display: flex; /* Горизонтальное расположение элементов */
-    justify-content: center; /* Выравнивание по центру */
-    gap: 25px; /* Расстояние между элементами */
+
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px; 
 }
 
 .goods-card {
+    text-align: center;
     background: white; /* Белый фон карточки */
     padding: 25px; /* Внутренние отступы */
     margin: 20px 0; /* Вертикальные отступы */
@@ -309,10 +321,14 @@ main.content {
 }
 
 /* ===== КОНТАКТЫ ===== */
-.contact-section {
-    justify-content: center; /* Выравнивание по центру */
-    flex-wrap: wrap; /* Перенос на новую строку при необходимости */
-    margin: 30px 0; /* Вертикальные отступы */
+.contact-section-grid {
+    margin-top: 50px; /* Отступ сверху */
+    margin: 0; /* Убираем внешние отступы */
+    padding: 0; /* Убираем внутренние отступы */
+
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px; 
 }
 
 .contact-info-all {
@@ -336,6 +352,7 @@ main.content {
 
 .contact-button {
     text-align: center;
+
 }
 
 .pick-up {
@@ -352,7 +369,7 @@ main.content {
     outline: none;       /* убираем контур при клике */
     box-shadow: none;    /* убираем тени */
     appearance: none;    /* сброс нативного стиля */
-    width: 25%;
+    width: 50%;
 
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
@@ -365,10 +382,15 @@ main.content {
 /* === Практика === */
 .practice-section {
     margin-top: 50px;
-    justify-content: center;
     margin: 0px;
     padding: 0px;
     gap: 25px; /* Расстояние между элементами */
+}
+
+.practice-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px; 
 }
 
 .practice-info {
@@ -388,7 +410,14 @@ main.content {
 }
 
 .practice-title {
-    font-size: 35px;
+    font-size: 30px;
+    text-align: center;
+    margin: 5px 0; /* Вертикальные отступы */
+    margin-bottom: 40px;
+}
+
+.practice-title-lower {
+    font-size: 25px;
     text-align: center;
     margin: 5px 0; /* Вертикальные отступы */
     margin-bottom: 40px;
@@ -423,7 +452,8 @@ main.content {
         flex-direction: column;
         gap: 10px;
     }
-    
+
+
     .skills-grid {
         grid-template-columns: 1fr;
     }
@@ -435,9 +465,30 @@ main.content {
     .news-grid  {
         grid-template-columns: 1fr;
     }
+
+    .page-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .goods-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .contact-section-grid {
+        grid-template-columns: 1fr;
+    }
     
     main.content {
         padding: 20px;
+
     }
 
 }
+
+/* .page-container {
+    outline: 2px dashed red;
+  }
+  
+  .header, .nav, .content, .footer {
+    outline: 2px solid blue;
+  } */
