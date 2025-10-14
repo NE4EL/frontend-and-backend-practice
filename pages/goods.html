@@ -8,44 +8,60 @@
     <link rel="stylesheet" href="../style/styles.css">
 </head>
 <body>
-    <div class="page-container">
+    <!-- Основной контейнер -->
+    <div class="page">
+        
+        <!-- Шапка -->
         <header class="header">
-            <h1>HEADER</h1>
+            <h1 class="header__title">HEADER</h1>
         </header>
+
+        <!-- Навигация -->
         <nav class="nav">
-            <ul class="nav-list">
-                <li class="nav-item"><a class="nav-link" href="../index.html">Главная</a></li>
-                <li class="nav-item"><a class="nav-link" href="news.html">Новости</a></li>
-                <li class="nav-item"><a class="nav-link" href="practices.html">Практики</a></li> 
-                <li class="nav-item"><a class="nav-link" href="goods.html">Товары</a></li>
-                <li class="nav-item"><a class="nav-link" href="contacts.html">Контакты</a></li>
+            <ul class="nav__list">
+                <li class="nav__item">
+                    <a class="nav__link" href="../index.html">Главная</a>
+                </li>
+                <li class="nav__item">
+                    <a class="nav__link" href="news.html">Новости</a>
+                </li>
+                <li class="nav__item">
+                    <a class="nav__link" href="contacts.html">Контакты</a>
+                </li>
+                <li class="nav__item nav__item--active">
+                    <a class="nav__link" href="goods.html">Товары</a>
+                </li>
             </ul>
         </nav>
-        <main class="content-g">
-            <section class="goods-section">
-                <h2 class="section-title">Наши товары</h2>
-                <div class="goods-grid">
-                    <article class="goods-card">
-                        <img class="goods-photo" src="../images/goods1.jpg" alt="PC" width="250" height="250">
-                        <p class="goods-title">Товар 1</p>
-                        <p class="goods-salle">Цена товара 1</p>
+        <main class="main">
+            <section class="goods">
+                <h2 class="goods__title">Наши товары</h2>
+                <div class="goods__list">
+                    <article class="goods-item">
+                        <img class="goods-item__photo" src="../images/goods1.jpg" alt="PC" width="250" height="250">
+                        <p class="goods-item__title">Товар 1</p>
+                        <p class="goods-item__price">Цена товара 1</p>
                     </article>
 
-                    <article class="goods-card">
-                        <img class="goods-photo" src="../images/goods2.jpg" alt="Vkusno" width="250" height="250">
-                        <p class="goods-title">Товар 2</p>
-                        <p class="goods-salle">Цена товара 2</p>
+                    <article class="goods-item">
+                        <img class="goods-item__photo" src="../images/goods2.jpg" alt="PC" width="250" height="250">
+                        <p class="goods-item__title">Товар 2</p>
+                        <p class="goods-item__price">Цена товара 2</p>
                     </article>
 
-                    <article class="goods-card">
-                        <img class="goods-photo" src="../images/goods3.jpg" alt="Wazzuuup" width="250" height="250">
-                        <p class="goods-title">Товар 3</p>
-                        <p class="goods-salle">Цена товара 3</p>
+                    <article class="goods-item">
+                        <img class="goods-item__photo" src="../images/goods3.jpg" alt="PC" width="250" height="250">
+                        <p class="goods-item__title">Товар 3</p>
+                        <p class="goods-item__price">Цена товара 3</p>
                     </article>
                 </div>
             </section>
         </main>
-        <footer class="footer">FOOTER</footer>
+
+        <!-- Подвал -->
+        <footer class="footer">
+            <p class="footer__text">&copy; 2025 MY SITE</p>
+        </footer>
     </div>
 </body>
 </html>

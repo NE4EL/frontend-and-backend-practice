@@ -341,8 +341,7 @@ body {
 .contact-button {
     font-size: 14px;
     text-align: center;
-    background: linear-gradient(135deg, #61376d 0%, #b921c1 100%); /* Темный градиентный фон */
-
+    background: linear-gradient(135deg, #5592a3 0%, #18d6d9 100%); /* Темный градиентный фон */
     color: white;
     padding: 15px;
     margin: 20px auto;
@@ -362,3 +361,52 @@ body {
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3); /* добавляем тень для объёма */
 }
 
+.goods {
+    background: var(--color-white);
+    padding: var(--space-lg);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+}
+
+.goods__title {
+    color: var(--color-main);
+    margin-bottom: var(--space-md);
+    font-size: 1.5rem;
+    text-align: center;
+}
+
+.goods__list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+}
+
+.goods-item {
+    padding: var(--space-md);
+    background: var(--color-light);
+    border-radius: var(--radius);
+    text-align: center;
+}
+
+.goods-item__photo {
+    width: 250px; /* Фиксированная ширина фото */
+    height: 250px; /* Фиксированная высота фото */
+    border-radius: 15px; /* Скругленные углы фото */
+    object-fit: cover; /* Обрезка фото для сохранения пропорций */
+    margin: 20px auto; /* Центрирование и отступы */
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3); /* Тень с синим оттенком */
+}
+
+.goods-item__title {
+    color: var(--color-accent);
+    margin-bottom: var(--space-md);
+    font-size: 1.5rem;
+    text-align: center;
+}
+
+.goods-item__price {
+    color: var(--color-accent);
+    margin-bottom: var(--space-md);
+    font-size: 1.5rem;
+    text-align: center; 
+}
