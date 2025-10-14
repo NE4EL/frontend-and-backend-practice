@@ -13,11 +13,14 @@
             }
 
             dialog {
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
                 border: none;
                 border-radius: 12px;
                 padding: 0;
                 box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-                animation: slideIn 0.3s ease;
                 max-width: 500px;
                 width: 90vw;
                 max-height: 90vh;
@@ -152,54 +155,48 @@
         </style>
     </head>
     <body>
-        <div class="page-container">
+        <div class="page">
+
             <header class="header">
-                <h1>Контакты</h1>
+                <h1 class="header__title">HEADER</h1>
             </header>
 
+            <!-- Навигация -->
             <nav class="nav">
-                <ul class="nav-list">
-                    <li class="nav-item"><a class="nav-link" href="../index.html">Главная</a></li>
-                    <li class="nav-item"><a class="nav-link" href="news.html">Новости</a></li>
-                    <li class="nav-item"><a class="nav-link" href="practices.html">Практики</a></li> 
-                    <li class="nav-item"><a class="nav-link" href="goods.html">Товары</a></li>
-                    <li class="nav-item"><a class="nav-link" href="contacts.html">Контакты</a></li>
+                <ul class="nav__list">
+                    <li class="nav__item">
+                        <a class="nav__link" href="../index.html">Главная</a>
+                    </li>
+                    <li class="nav__item">
+                        <a class="nav__link" href="news.html">Новости</a>
+                    </li>
+                    <li class="nav__item nav__item--active">
+                        <a class="nav__link" href="contacts.html">Контакты</a>
+                    </li>
                 </ul>
             </nav>
 
-            <main class="content">
-                <section class="contacts-section">
-                    <h2 class="section-title">Наши контакты</h2>
-                    
-                    <article class="contact-info">
-                        <h3>Электронная почта</h3>
-                        <p>Адрес электронной почты: evtushenko.06@mail.ru</p>
-                    </article>
-                    
-                    <article class="contact-info">
-                        <h3>Физический адрес</h3>
-                        <p>Адрес: г. Москва, ул. Пушкина, д. Колотушкина</p>
-                    </article>
-
-                    <div class="contact-grid">
-                        <div class="contact-item">
-                            <h3>Телефон</h3>
-                            <p>+7 (495) 123-45-67</p>
-                        </div>
-                        <div class="contact-item">
-                            <h3>Время работы</h3>
-                            <p>Пн-Пт: 9:00-18:00</p>
-                        </div>
-                        <div class="contact-item">
-                            <h3>Социальные сети</h3>
-                            <p>VK, Telegram, WhatsApp</p>
-                        </div>
+            <main class="main">
+                <section class="contacts">
+                    <h2 class="contacts__title">Наши контакты</h2>
+                    <div class="contacts__list">
+                            <div class="contact-item">
+                                <h3 class="contact-item__title">Телефон</h3>
+                                <p class="contact-item__value">+7 (983) 272-53-59</p>
+                            </div>
+                            <div class="contact-item">
+                                <h3 class="contact-item__title">Время работы</h3>
+                                <p class="contact-item__value">Пн-Пт: 9:00-18:00</p>
+                            </div>
+                            <div class="contact-item">
+                                <h3 class="contact-item__title">Социальные сети</h3>
+                                <p class="contact-item__value">VK, Telegram, WhatsApp</p>
+                            </div>
+                        
+                        <!-- Измененная кнопка для открытия модального окна -->
+                        <button class="contact-button" onclick="contactModal.showModal()">Связаться с нами</button>
                     </div>
                     
-                    <!-- Измененная кнопка для открытия модального окна -->
-                    <button class="contact-button" onclick="contactModal.showModal()">Связаться с нами</button>
-                </section>
-            </main>
 
             <footer class="footer">
                 <p>© 2024 Все права защищены. Контактная информация</p>

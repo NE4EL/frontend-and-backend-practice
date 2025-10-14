@@ -3,66 +3,64 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Workplace (n)</title>
-
+    <title>Main</title>
     <link rel="stylesheet" href="../style/styles.css">
 </head>
 <body>
-    <div class="page-container">
+    <!-- Основной контейнер -->
+    <div class="page">
+        
+        <!-- Шапка -->
         <header class="header">
-            <h1>HEADER</h1>
+            <h1 class="header__title">HEADER</h1>
         </header>
+
+        <!-- Навигация -->
         <nav class="nav">
-            <ul class="nav-list">
-                <li class="nav-item"><a class="nav-link" href="../index.html">Главная</a></li>
-                <li class="nav-item"><a class="nav-link" href="news.html">Новости</a></li>
-                <li class="nav-item"><a class="nav-link" href="practices.html">Практики</a></li> 
-                <li class="nav-item"><a class="nav-link" href="goods.html">Товары</a></li>
-                <li class="nav-item"><a class="nav-link" href="contacts.html">Контакты</a></li>
+            <ul class="nav__list">
+                <li class="nav__item">
+                    <a class="nav__link" href="../index.html">Главная</a>
+                </li>
+                <li class="nav__item nav__item--active">
+                    <a class="nav__link" href="news.html">Новости</a>
+                </li>
+                <li class="nav__item">
+                    <a class="nav__link" href="contacts.html">Контакты</a>
+                </li>
             </ul>
         </nav>
-        <main class="content-n">
-            <section class="news-section">
-                <h2 class="section-title-news">НОВОСТИ</h2>
-                <div class="news-grid">
-                    <article class="news-card">
-                        <h1 class="news-title">News 1</h1>
-                        <p class="news-name">01.01.2088 Evtushenko Egor</p>
-                        <p class="news-info">Bla-bla-bla-bla</p>
-                    </article>
 
-                    <article class="news-card">
-                        <h1 class="news-title">News 2</h1>
-                        <p class="news-name">012.012.2088 Evtushenko Egor</p>
-                        <p class="news-info">Bla-bla-bla-bla</p>
-                    </article>
+        <!-- Основной контент -->
+        <main class="main">
+            
+            <!-- Новости -->
+            <section class="news">
+                <h2 class="news__title">NEWS</h2>
+                <div class="news__list">
+                    <div class="news-item">
+                        <h3 class="news-item__title">Новость 1</h3>
+                        <p class="news-item__date">05.06.2024</p>
+                        <p class="news-item__text">blablablablablablabla</p>
+                    </div>
 
-                    <article class="news-card">
-                        <h1 class="news-title">News 1</h1>
-                        <p class="news-name">0122.0122.2088 Evtushenko Egor</p>
-                        <p class="news-info">Bla-bla-bla-bla</p>
-                    </article>
+                    <div class="news-item">
+                        <h3 class="news-item__title">Новость 2</h3>
+                        <p class="news-item__date">05.06.2024</p>
+                        <p class="news-item__text">blablablablablablabla</p>
+                    </div>
 
-                    <article class="news-card">
-                        <h1 class="news-title">News 1</h1>
-                        <p class="news-name">0122.0122.2088 Evtushenko Egor</p>
-                        <p class="news-info">Bla-bla-bla-bla</p>
-                    </article>
-                    <article class="news-card">
-                        <h1 class="news-title">News 1</h1>
-                        <p class="news-name">0122.0122.2088 Evtushenko Egor</p>
-                        <p class="news-info">Bla-bla-bla-bla</p>
-                    </article>
-                    <article class="news-card">
-                        <h1 class="news-title">News 1</h1>
-                        <p class="news-name">0122.0122.2088 Evtushenko Egor</p>
-                        <p class="news-info">Bla-bla-bla-bla</p>
-                    </article>
+                    <div class="news-item">
+                        <h3 class="news-item__title">Новость 3</h3>
+                        <p class="news-item__date">05.06.2024</p>
+                        <p class="news-item__text">blablablablablablabla</p>
+                    </div>
                 </div>
             </section>
         </main>
+
+        <!-- Подвал -->
         <footer class="footer">
-            <h1>FOOTER</h1>
+            <p class="footer__text">&copy; 2025 MY SITE</p>
         </footer>
     </div>
 </body>
