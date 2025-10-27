@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Учебный дневник - StudentDev Portfolio</title>
+    <link rel="stylesheet" href="../style/styles.css">
+</head>
+<body>
+    <div class="page">
+        <!-- Header -->
+        <header class="header">
+            <div class="container">
+                <div class="header__content">
+                    <h1 class="header__title">Evtushenko Egor</h1>
+                    <p class="header__subtitle">Студент-разработчик</p>
+                </div>
+            </div>
+        </header>
+
+        <!-- Navigation -->
+        <nav class="nav">
+            <div class="container">
+                <ul class="nav__list">
+                    <li class="nav__item">
+                        <a href="../index.html" class="nav__link">Главная</a>
+                    </li>
+                    <li class="nav__item">
+                        <a href="projects.html" class="nav__link">Проекты</a>
+                    </li>
+                    <li class="nav__item nav__item--active">
+                        <a href="diary.html" class="nav__link">Дневник</a>
+                    </li>
+                    <li class="nav__item">
+                        <a href="contacts.html" class="nav__link">Контакты</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main">
+            <div class="container">
+                <!-- Timeline -->
+                <section class="timeline">
+                    <h2 class="section-title">Мой учебный прогресс</h2>
+
+                    <div class="timeline__item">
+                        <div class="timeline__date">15 дек</div>
+                        <div class="timeline__content">
+                            <h3 class="timeline__title">Верстка макета сайта</h3>
+                            <p class="timeline__description">Разметка страниц и стилизация макета по дизайну.</p>
+                            <span class="timeline__status timeline__status--completed">✓ Завершено</span>
+                        </div>
+                    </div>
+
+                    <div class="timeline__item">
+                        <div class="timeline__date">10 дек</div>
+                        <div class="timeline__content">
+                            <h3 class="timeline__title">JavaScript основы</h3>
+                            <p class="timeline__description">Изучены переменные, функции, события и DOM.</p>
+                            <span class="timeline__status timeline__status--completed">✓ Завершено</span>
+                        </div>
+                    </div>
+
+                    <div class="timeline__item">
+                        <div class="timeline__date">05 дек</div>
+                        <div class="timeline__content">
+                            <h3 class="timeline__title">Работа с формами</h3>
+                            <p class="timeline__description">Создание интерактивных форм и валидации данных.</p>
+                            <span class="timeline__status timeline__status--in-progress">⏳ В процессе</span>
+                        </div>
+                    </div>
+
+                    <div class="timeline__item">
+                        <div class="timeline__date">01 дек</div>
+                        <div class="timeline__content">
+                            <h3 class="timeline__title">Адаптивный дизайн</h3>
+                            <p class="timeline__description">Освоена адаптация макетов под разные устройства.</p>
+                            <span class="timeline__status timeline__status--in-progress">⏳ В процессе</span>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Courses Section -->
+                <section class="courses">
+                    <h2 class="courses__title">Текущие курсы</h2>
+
+                    <div class="courses__grid">
+                        <div class="course">
+                            <div class="course__header">
+                                <span class="course__name">Веб-разработка</span>
+                                <span class="course__percent">90%</span>
+                            </div>
+                            <div class="course__progress">
+                                <div class="course__progress-bar" style="width: 90%;"></div>
+                            </div>
+                        </div>
+
+                        <div class="course">
+                            <div class="course__header">
+                                <span class="course__name">JavaScript</span>
+                                <span class="course__percent">70%</span>
+                            </div>
+                            <div class="course__progress">
+                                <div class="course__progress-bar" style="width: 70%;"></div>
+                            </div>
+                        </div>
+
+                        <div class="course">
+                            <div class="course__header">
+                                <span class="course__name">React</span>
+                                <span class="course__percent">50%</span>
+                            </div>
+                            <div class="course__progress">
+                                <div class="course__progress-bar" style="width: 50%;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Add Entry Form -->
+                <section class="add-entry">
+                    <h2 class="add-entry__title">Добавить запись</h2>
+                    <form class="add-entry__form">
+                        <div class="form-group">
+                            <label for="date" class="form-label">Дата</label>
+                            <input type="date" id="date" class="form-input" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="topic" class="form-label">Тема</label>
+                            <input type="text" id="topic" class="form-input" placeholder="Введите название темы" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="description" class="form-label">Описание</label>
+                            <textarea id="description" class="form-textarea" placeholder="Краткое описание выполненной работы"></textarea>
+                        </div>
+                        <button type="submit" class="button button--primary">Добавить запись</button>
+                    </form>
+                </section>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="container">
+                <div class="footer__content">
+                    <p class="footer__copyright">&copy; 2025 StudentDev Portfolio</p>
+                    <div class="footer__links">
+                        <a href="mailto:student@edu.ru" class="footer__link">student@edu.ru</a>
+                        <a href="https://github.com" class="footer__link">GitHub</a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+</body>
+</html>
