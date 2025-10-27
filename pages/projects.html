@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Проекты - StudentDev Portfolio</title>
+    <link rel="stylesheet" href="../style/styles.css">
+</head>
+<body>
+    <div class="page">
+        <!-- Header -->
+        <header class="header">
+            <div class="container">
+                <div class="header__content">
+                    <h1 class="header__title">Evtushenko Egor</h1>
+                    <p class="header__subtitle">Студент-разработчик</p>
+                </div>
+            </div>
+        </header>
+
+        <!-- Navigation -->
+        <nav class="nav">
+            <div class="container">
+                <ul class="nav__list">
+                    <li class="nav__item">
+                        <a href="../index.html" class="nav__link">Главная</a>
+                    </li>
+                    <li class="nav__item nav__item--active">
+                        <a href="projects.html" class="nav__link">Проекты</a>
+                    </li>
+                    <li class="nav__item">
+                        <a href="diary.html" class="nav__link">Дневник</a>
+                    </li>
+                    <li class="nav__item">
+                        <a href="contacts.html" class="nav__link">Контакты</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main">
+            <div class="container">
+                <!-- Projects Section -->
+                <section class="projects">
+                    <div class="projects__header">
+                        <h2 class="section-title">Мои проекты</h2>
+                        <div class="projects__filters">
+                            <button class="filter filter--active">Все</button>
+                            <button class="filter">HTML/CSS</button>
+                            <button class="filter">JavaScript</button>
+                            <button class="filter">React</button>
+                        </div>
+                    </div>
+
+                    <div class="projects__grid">
+                        <!-- Project 1 -->
+                        <div class="project-card">
+                            <div class="project-card__image">
+                                <img src="../img/projects/personal-site.jpg" alt="Личный сайт">
+                            </div>
+                            <div class="project-card__content">
+                                <h3 class="project-card__title">Личный сайт</h3>
+                                <p class="project-card__description">
+                                    Персональный сайт-портфолио с разделами «Обо мне», «Навыки» и «Контакты».
+                                </p>
+                                <div class="project-card__tags">
+                                    <span class="tag">HTML</span>
+                                    <span class="tag">CSS</span>
+                                </div>
+                                <a href="#" class="button button--primary project-card__button">Подробнее</a>
+                            </div>
+                        </div>
+
+                        <!-- Project 2 -->
+                        <div class="project-card">
+                            <div class="project-card__image">
+                                <img src="../img/projects/todo-app.jpg" alt="Todo-приложение">
+                            </div>
+                            <div class="project-card__content">
+                                <h3 class="project-card__title">Todo-приложение</h3>
+                                <p class="project-card__description">
+                                    Простое приложение для управления задачами с сохранением в LocalStorage.
+                                </p>
+                                <div class="project-card__tags">
+                                    <span class="tag">JavaScript</span>
+                                    <span class="tag">HTML</span>
+                                    <span class="tag">CSS</span>
+                                </div>
+                                <a href="#" class="button button--primary project-card__button">Подробнее</a>
+                            </div>
+                        </div>
+
+                        <!-- Project 3 -->
+                        <div class="project-card">
+                            <div class="project-card__image">
+                                <img src="../img/projects/shop.jpg" alt="Интернет-магазин">
+                            </div>
+                            <div class="project-card__content">
+                                <h3 class="project-card__title">Интернет-магазин</h3>
+                                <p class="project-card__description">
+                                    Прототип онлайн-магазина с корзиной и фильтрацией товаров.
+                                </p>
+                                <div class="project-card__tags">
+                                    <span class="tag">React</span>
+                                    <span class="tag">JavaScript</span>
+                                </div>
+                                <a href="#" class="button button--primary project-card__button">Подробнее</a>
+                            </div>
+                        </div>
+
+                        <!-- Project 4 -->
+                        <div class="project-card">
+                            <div class="project-card__image">
+                                <img src="../img/projects/bootstrap-portfolio.jpg" alt="Портфолио на Bootstrap">
+                            </div>
+                            <div class="project-card__content">
+                                <h3 class="project-card__title">Портфолио на Bootstrap</h3>
+                                <p class="project-card__description">
+                                    Одностраничное портфолио, созданное с использованием фреймворка Bootstrap.
+                                </p>
+                                <div class="project-card__tags">
+                                    <span class="tag">Bootstrap</span>
+                                    <span class="tag">HTML</span>
+                                    <span class="tag">CSS</span>
+                                </div>
+                                <a href="#" class="button button--primary project-card__button">Подробнее</a>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="container">
+                <div class="footer__content">
+                    <p class="footer__copyright">&copy; 2025 StudentDev Portfolio</p>
+                    <div class="footer__links">
+                        <a href="mailto:student@edu.ru" class="footer__link">student@edu.ru</a>
+                        <a href="https://github.com" class="footer__link">GitHub</a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+</body>
+</html>
