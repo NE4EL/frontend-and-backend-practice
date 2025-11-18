@@ -2,188 +2,81 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Адаптивные изображения - Демо</title>
-    <link rel="stylesheet" href="projects/styles.css">
+    <title>Контакты</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        fieldset { border: 1px solid #ccc; padding: 20px; margin-bottom: 20px; }
+        legend { font-weight: bold; }
+        .form-field { margin-bottom: 15px; display: flex; flex-direction: column; }
+        input, textarea { padding: 10px; font-size: 16px; border: 1px solid #ccc; border-radius: 4px; }
+        input:focus, textarea:focus { outline: 2px solid #0066cc; }
+        .error { color: #b00020; font-size: 14px; }
+        .submit-btn { background: #0066cc; color: white; padding: 10px; border: none; cursor: pointer; border-radius: 4px; }
+        .submit-btn:focus { outline: 2px solid #ffcc00; }
+    </style>
 </head>
 <body>
-    <div class="container">
-        <header class="header">
-            <h1 class="header__title">Адаптивные изображения</h1>
-            <p class="header__subtitle">Демонстрация современных техник</p>
-        </header>
+    <h1>Свяжитесь с нами</h1>
 
-        <main class="main">
-            <!-- Секция 1: Простое адаптивное изображение -->
-            <section class="section">
-                <h2 class="section__title">1. Базовое адаптивное изображение</h2>
-                <div class="image-container">
-                    <img src="projects/images/goods2.jpg" 
-                         alt="Красивый пейзаж с горами и озером"
-                         class="responsive-image">
-                </div>
-                <div class="explanation">
-                    <h3>Что происходит:</h3>
-                    <ul>
-                        <li>Изображение занимает 100% ширины контейнера</li>
-                        <li>Высота автоматически рассчитывается для сохранения пропорций</li>
-                        <li>Работает на всех устройствах</li>
-                    </ul>
-                </div>
-            </section>
+    <form aria-label="Форма обратной связи" novalidate>
+        <fieldset>
+            <legend>Ваши данные</legend>
 
-            <!-- Секция 2: Picture element с разными версиями -->
-            <section class="section">
-                <h2 class="section__title">2. Picture element с форматами</h2>
-                <div class="image-container">
-                    <picture>
-                        <!-- WebP для современных браузеров -->
-                        <source srcset="projects/images/goods2.jpg" type="image/webp">
-                        <!-- JPEG для старых браузеров -->
-                        <source srcset="projects/images/goods2.jpg" type="image/jpeg">
-                        <!-- Фолбэк -->
-                        <img src="images/portrait.jpg" 
-                             alt="Портрет человека"
-                             class="responsive-image">
-                    </picture>
-                </div>
-                <div class="explanation">
-                    <h3>Что происходит:</h3>
-                    <ul>
-                        <li>Браузер выбирает лучший формат (WebP или JPEG)</li>
-                        <li>Автоматическое переключение между форматами</li>
-                        <li>Фолбэк для старых браузеров</li>
-                    </ul>
-                </div>
-            </section>
+            <div class="form-field">
+                <label for="name">Имя <span aria-hidden="true">*</span></label>
+                <input type="text" id="name" name="name" required aria-required="true" aria-describedby="name-error">
+                <span id="name-error" class="error" aria-live="polite"></span>
+            </div>
 
-            <!-- Секция 3: Разные изображения для разных размеров экрана -->
-            <section class="section">
-                <h2 class="section__title">3. Разные изображения для разных экранов</h2>
-                <div class="image-container">
-                    <picture>
-                        <!-- Большое изображение для десктопов -->
-                        <source media="(min-width: 1200px)" 
-                                srcset="projects/images/goods3.jpg">
-                        <!-- Среднее для планшетов -->
-                        <source media="(min-width: 768px)" 
-                                srcset="projects/images/goods1.jpg">
-                        <!-- Маленькое для мобильных -->
-                        <img src="projects/images/goods2.jpg" 
-                             alt="Адаптивное изображение для разных устройств"
-                             class="responsive-image">
-                    </picture>
-                </div>
-                <div class="explanation">
-                    <h3>Что происходит:</h3>
-                    <ul>
-                        <li>Десктопы: wide-desktop.jpg (1200px+)</li>
-                        <li>Планшеты: tablet.jpg (768px-1199px)</li>
-                        <li>Мобильные: mobile.jpg (до 767px)</li>
-                        <li>Браузер сам выбирает подходящее изображение</li>
-                    </ul>
-                </div>
-            </section>
+            <div class="form-field">
+                <label for="email">Email <span aria-hidden="true">*</span></label>
+                <input type="email" id="email" name="email" required aria-required="true" aria-describedby="email-error">
+                <span id="email-error" class="error" aria-live="polite"></span>
+            </div>
 
-            <!-- Секция 4: Retina display поддержка -->
-            <section class="section">
-                <h2 class="section__title">4. Поддержка Retina дисплеев</h2>
-                <div class="image-container">
-                    <img src="projects/images/Frame.png" 
-                         srcset="images/icon@1x.png 1x, images/icon@2x.png 2x"
-                         alt="Иконка с поддержкой Retina"
-                         class="retina-image">
-                </div>
-                <div class="explanation">
-                    <h3>Что происходит:</h3>
-                    <ul>
-                        <li>Обычные экраны: icon@1x.png</li>
-                        <li>Retina экраны: icon@2x.png (в 2 раза четче)</li>
-                        <li>Автоматическое определение плотности пикселей</li>
-                    </ul>
-                </div>
-            </section>
+            <div class="form-field">
+                <label for="message">Сообщение</label>
+                <textarea id="message" name="message" rows="5"></textarea>
+            </div>
+        </fieldset>
 
-            <!-- Секция 5: Object-fit демонстрация -->
-            <section class="section">
-                <h2 class="section__title">5. Object-fit свойства</h2>
-                <div class="object-fit-demo">
-                    <div class="object-fit-item">
-                        <img src="projects/images/goods2.jpg" 
-                             alt="Cover пример"
-                             class="object-fit-cover">
-                        <span>object-fit: cover</span>
-                    </div>
-                    <div class="object-fit-item">
-                        <img src="projects/images/goods2.jpg" 
-                             alt="Contain пример"
-                             class="object-fit-contain">
-                        <span>object-fit: contain</span>
-                    </div>
-                    <div class="object-fit-item">
-                        <img src="projects/images/goods2.jpg" 
-                             alt="Fill пример"
-                             class="object-fit-fill">
-                        <span>object-fit: fill</span>
-                    </div>
-                </div>
-                <div class="explanation">
-                    <h3>Что происходит:</h3>
-                    <ul>
-                        <li><strong>cover</strong> - заполняет контейнер, обрезая края</li>
-                        <li><strong>contain</strong> - вписывает полностью, могут быть поля</li>
-                        <li><strong>fill</strong> - растягивает, искажая пропорции</li>
-                    </ul>
-                </div>
-            </section>
+        <button type="submit" class="submit-btn">Отправить</button>
+    </form>
 
-            <!-- Секция 6: Адаптивная галерея без обрезки -->
-            <section class="section">
-                <h2 class="section__title">6. Адаптивная галерея (без обрезки)</h2>
-                <div class="gallery">
-                    <div class="gallery__item">
-                        <div class="gallery__image-container">
-                            <img src="projects/images/goods2.jpg" 
-                                alt="Галерея 1 - Горный пейзаж"
-                                class="gallery__image">
-                        </div>
-                    </div>
-                    <div class="gallery__item">
-                        <div class="gallery__image-container">
-                            <img src="projects/images/goods2.jpg" 
-                                alt="Галерея 2 - Городской вид"
-                                class="gallery__image">
-                        </div>
-                    </div>
-                    <div class="gallery__item">
-                        <div class="gallery__image-container">
-                            <img src="projects/images/goods2.jpg" 
-                                alt="Галерея 3 - Природа"
-                                class="gallery__image">
-                        </div>
-                    </div>
-                    <div class="gallery__item">
-                        <div class="gallery__image-container">
-                            <img src="projects/images/goods2.jpg" 
-                                alt="Галерея 4 - Архитектура"
-                                class="gallery__image">
-                        </div>
-                    </div>
-                </div>
-                <div class="explanation">
-                    <h3>Что происходит:</h3>
-                    <ul>
-                        <li><strong>На десктопах:</strong> 4 изображения в ряд, пропорциональное масштабирование</li>
-                        <li><strong>На мобильных:</strong> 1 изображение в ряд, полная видимость</li>
-                        <li><strong>Особенности:</strong> Никакой обрезки, плавное масштабирование, сохранение пропорций</li>
-        </ul>
-    </div>
-</section>
-        </main>
+    <script>
+        const form = document.querySelector('form');
+        const nameInput = document.getElementById('name');
+        const emailInput = document.getElementById('email');
+        const nameError = document.getElementById('name-error');
+        const emailError = document.getElementById('email-error');
 
-        <footer class="footer">
-            <p>Измените размер окна браузера чтобы увидеть адаптивность в действии!</p>
-        </footer>
-    </div>
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            let valid = true;
+
+            if (!nameInput.value.trim()) {
+                nameError.textContent = 'Введите ваше имя';
+                nameInput.setAttribute('aria-invalid', 'true');
+                valid = false;
+            } else {
+                nameError.textContent = '';
+                nameInput.removeAttribute('aria-invalid');
+            }
+
+            if (!emailInput.value.trim() || !emailInput.value.includes('@')) {
+                emailError.textContent = 'Введите корректный email';
+                emailInput.setAttribute('aria-invalid', 'true');
+                valid = false;
+            } else {
+                emailError.textContent = '';
+                emailInput.removeAttribute('aria-invalid');
+            }
+
+            if (valid) {
+                alert('Форма отправлена!');
+                form.reset();
+            }
+        });
+    </script>
 </body>
 </html>
