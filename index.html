@@ -1,82 +1,32 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <title>Контакты</title>
+    <title>Мой сайт - Главная страница</title>
     <style>
-        body { font-family: Arial, sans-serif; padding: 20px; }
-        fieldset { border: 1px solid #ccc; padding: 20px; margin-bottom: 20px; }
-        legend { font-weight: bold; }
-        .form-field { margin-bottom: 15px; display: flex; flex-direction: column; }
-        input, textarea { padding: 10px; font-size: 16px; border: 1px solid #ccc; border-radius: 4px; }
-        input:focus, textarea:focus { outline: 2px solid #0066cc; }
-        .error { color: #b00020; font-size: 14px; }
-        .submit-btn { background: #0066cc; color: white; padding: 10px; border: none; cursor: pointer; border-radius: 4px; }
-        .submit-btn:focus { outline: 2px solid #ffcc00; }
+        .btn { 
+            background: #0056b3; /* Увеличили контраст */
+            color: white; 
+            padding: 10px;
+            border: none;
+            cursor: pointer;
+        }
+        .text { 
+            color: #333; /* Увеличили контраст с #888 до #333 */
+        }
+        .image { width: 300px; }
     </style>
 </head>
 <body>
-    <h1>Свяжитесь с нами</h1>
-
-    <form aria-label="Форма обратной связи" novalidate>
-        <fieldset>
-            <legend>Ваши данные</legend>
-
-            <div class="form-field">
-                <label for="name">Имя <span aria-hidden="true">*</span></label>
-                <input type="text" id="name" name="name" required aria-required="true" aria-describedby="name-error">
-                <span id="name-error" class="error" aria-live="polite"></span>
-            </div>
-
-            <div class="form-field">
-                <label for="email">Email <span aria-hidden="true">*</span></label>
-                <input type="email" id="email" name="email" required aria-required="true" aria-describedby="email-error">
-                <span id="email-error" class="error" aria-live="polite"></span>
-            </div>
-
-            <div class="form-field">
-                <label for="message">Сообщение</label>
-                <textarea id="message" name="message" rows="5"></textarea>
-            </div>
-        </fieldset>
-
-        <button type="submit" class="submit-btn">Отправить</button>
-    </form>
-
-    <script>
-        const form = document.querySelector('form');
-        const nameInput = document.getElementById('name');
-        const emailInput = document.getElementById('email');
-        const nameError = document.getElementById('name-error');
-        const emailError = document.getElementById('email-error');
-
-        form.addEventListener('submit', function(e) {
-            e.preventDefault();
-            let valid = true;
-
-            if (!nameInput.value.trim()) {
-                nameError.textContent = 'Введите ваше имя';
-                nameInput.setAttribute('aria-invalid', 'true');
-                valid = false;
-            } else {
-                nameError.textContent = '';
-                nameInput.removeAttribute('aria-invalid');
-            }
-
-            if (!emailInput.value.trim() || !emailInput.value.includes('@')) {
-                emailError.textContent = 'Введите корректный email';
-                emailInput.setAttribute('aria-invalid', 'true');
-                valid = false;
-            } else {
-                emailError.textContent = '';
-                emailInput.removeAttribute('aria-invalid');
-            }
-
-            if (valid) {
-                alert('Форма отправлена!');
-                form.reset();
-            }
-        });
-    </script>
+    <!-- Было: div с onclick -> Стало: семантическая кнопка -->
+    <button class="btn" onclick="alert('Clicked!')">Нажми меня</button>
+    
+    <p class="text">Важная информация</p>
+    
+    <!-- Было: img без alt -> Стало: с описательным alt -->
+    <img src="chart.jpg" class="image" alt="График продаж за 2024 год">
+    
+    <!-- Было: input с placeholder -> Стало: с label -->
+    <label for="username">Имя пользователя</label>
+    <input type="text" id="username" name="username">
 </body>
 </html>
