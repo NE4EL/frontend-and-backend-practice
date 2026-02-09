@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Главная - StudentDev Portfolio</title>
+    <link rel="stylesheet" href="../style/styles.css">
+</head>
+<body>
+    <div class="page">
+        <!-- Header -->
+        <header class="header">
+            <div class="container">
+                <div class="header__content">
+                    <h1 class="header__title">Все проекты</h1>
+                    <p class="header__subtitle">Проекты это мое все!!!</p>
+                </div>
+            </div>
+        </header>
+
+        <!-- Navigation -->
+        <nav class="nav">
+            <ul class="nav__list">
+                <li class="nav__item">
+                    <a class="nav__link" href="../index.html">Главная</a>
+                </li>
+                <li class="nav__item nav__item--active">
+                    <a class="nav__link" href="projects.html">Проекты</a>
+                </li>
+                <li class="nav__item">
+                    <a class="nav__link" href="diary.html">Дневник</a>
+                </li>
+                <li class="nav__item">
+                    <a class="nav__link" href="contacts.html">Контакты</a>
+                </li>
+            </ul>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main">
+            <div class="container">
+                <header class="projects__header">
+                    <h2 class="section-title">Все проекты</h2>
+                    <div class="projects__filters">
+                        <button class="filter filter--active">Все</button>
+                        <button class="filter">HTML/CSS</button>
+                        <button class="filter">JavaScript</button>
+                        <button class="filter">React</button>
+                    </div>
+                </header>
+
+                <section class="projects">
+                    <div class="projects__grid">
+                        <article class="project-card">
+                            <div class="project-card__image">
+                                <img src="../images/project1.jpg" alt="Личный сайт">
+                            </div>
+                            <div class="project-card__content">
+                                <h3 class="project-card__title">Личный сайт</h3>
+                                <p class="project-card__description">
+                                    Адаптивное портфолио, созданное с нуля с использованием HTML и CSS.
+                                </p>
+                                <div class="project-card__tags">
+                                    <span class="tag">HTML</span>
+                                    <span class="tag">CSS</span>
+                                </div>
+                                <a href="#" class="button button--primary project-card__button">Подробнее</a>
+                            </div>
+                        </article>
+
+                        <article class="project-card">
+                            <div class="project-card__image">
+                                <img src="../images/project2.jpg" alt="Todo приложение">
+                            </div>
+                            <div class="project-card__content">
+                                <h3 class="project-card__title">Todo приложение</h3>
+                                <p class="project-card__description">
+                                    Приложение для работы со списками задач с сохранением в LocalStorage.
+                                </p>
+                                <div class="project-card__tags">
+                                    <span class="tag">JavaScript</span>
+                                    <span class="tag">LocalStorage</span>
+                                </div>
+                                <a href="#" class="button button--primary project-card__button">Подробнее</a>
+                            </div>
+                        </article>
+
+                        <article class="project-card">
+                            <div class="project-card__image">
+                                <img src="../images/project3.jpg" alt="Интернет-магазин">
+                            </div>
+                            <div class="project-card__content">
+                                <h3 class="project-card__title">Интернет-магазин</h3>
+                                <p class="project-card__description">
+                                    React‑приложение с корзиной, товарами и обработкой API.
+                                </p>
+                                <div class="project-card__tags">
+                                    <span class="tag">React</span>
+                                    <span class="tag">API</span>
+                                </div>
+                                <a href="#" class="button button--primary project-card__button">Подробнее</a>
+                            </div>
+                        </article>
+
+                        <article class="project-card">
+                            <div class="project-card__image">
+                                <img src="../images/project4.jpg" alt="Учебный проект">
+                            </div>
+                            <div class="project-card__content">
+                                <h3 class="project-card__title">Учебный проект</h3>
+                                <p class="project-card__description">
+                                    Практическая работа по адаптивной вёрстке и созданию компонентов интерфейса.
+                                </p>
+                                <div class="project-card__tags">
+                                    <span class="tag">HTML</span>
+                                    <span class="tag">CSS</span>
+                                    <span class="tag">JavaScript</span>
+                                </div>
+                                <a href="#" class="button button--primary project-card__button">Подробнее</a>
+                            </div>
+                        </article>
+                    </div>
+                </section>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="container">
+                <div class="footer__content">
+                    <p class="footer__copyright">&copy; 2025 StudentDev Portfolio</p>
+                    <div class="footer__links">
+                        <a href="mailto:student@edu.ru" class="footer__link">student@edu.ru</a>
+                        <a href="https://github.com" class="footer__link">GitHub</a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+        

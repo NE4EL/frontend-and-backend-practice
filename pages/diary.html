@@ -1,0 +1,163 @@
+
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Дневник — StudentDev Portfolio</title>
+    <link rel="stylesheet" href="../style/styles.css">
+</head>
+<body>
+    <div class="page">
+
+        <!-- Header -->
+        <header class="header">
+            <div class="container">
+                <div class="header__content">
+                    <h1 class="header__title">Дневник обучения</h1>
+                    <p class="header__subtitle">Мой путь развития и ежедневный прогресс</p>
+                </div>
+            </div>
+        </header>
+
+        <!-- Navigation -->
+        <nav class="nav">
+            <div class="container">
+                <ul class="nav__list">
+                    <li class="nav__item">
+                        <a href="../index.html" class="nav__link">Главная</a>
+                    </li>
+                    <li class="nav__item">
+                        <a href="projects.html" class="nav__link">Проекты</a>
+                    </li>
+                    <li class="nav__item nav__item--active">
+                        <a href="diary.html" class="nav__link">Дневник</a>
+                    </li>
+                    <li class="nav__item">
+                        <a href="contacts.html" class="nav__link">Контакты</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+
+        <!-- Main -->
+        <main class="main">
+            <div class="container">
+
+                <h2 class="section-title">Хронология обучения</h2>
+
+                <section class="timeline">
+
+                    <div class="timeline__item">
+                        <div class="timeline__date">15 февраля 2025</div>
+                        <div class="timeline__content">
+                            <h3 class="timeline__title">Изучение HTML и CSS</h3>
+                            <p class="timeline__description">
+                                Освоил базовую вёрстку, работу с flex и grid, научился создавать адаптивные секции.
+                            </p>
+                            <span class="timeline__status timeline__status--completed">Завершено</span>
+                        </div>
+                    </div>
+
+                    <div class="timeline__item">
+                        <div class="timeline__date">20 февраля 2025</div>
+                        <div class="timeline__content">
+                            <h3 class="timeline__title">Начал изучать JavaScript</h3>
+                            <p class="timeline__description">
+                                Прошёл основы языка, научился работать с DOM, начал писать интерактивные элементы.
+                            </p>
+                            <span class="timeline__status timeline__status--in-progress">В процессе</span>
+                        </div>
+                    </div>
+
+                    <div class="timeline__item">
+                        <div class="timeline__date">1 марта 2025</div>
+                        <div class="timeline__content">
+                            <h3 class="timeline__title">Прохождение курса по React</h3>
+                            <p class="timeline__description">
+                                Изучение компонентов, props, состояния и хуков. Создаю первые небольшие приложения.
+                            </p>
+                            <span class="timeline__status timeline__status--planned">Запланировано</span>
+                        </div>
+                    </div>
+
+                </section>
+
+                <section class="courses">
+                    <h2 class="courses__title">Мои текущие курсы</h2>
+
+                    <div class="courses__grid">
+                        <div class="course">
+                            <div class="course__header">
+                                <span class="course__name">Frontend-разработка</span>
+                                <span class="course__percent">70%</span>
+                            </div>
+                            <div class="course__progress">
+                                <div class="course__progress-bar" style="width: 70%;"></div>
+                            </div>
+                        </div>
+
+                        <div class="course">
+                            <div class="course__header">
+                                <span class="course__name">JavaScript Продвинутый</span>
+                                <span class="course__percent">40%</span>
+                            </div>
+                            <div class="course__progress">
+                                <div class="course__progress-bar" style="width: 40%;"></div>
+                            </div>
+                        </div>
+
+                        <div class="course">
+                            <div class="course__header">
+                                <span class="course__name">React Основы</span>
+                                <span class="course__percent">10%</span>
+                            </div>
+                            <div class="course__progress">
+                                <div class="course__progress-bar" style="width: 10%;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="add-entry">
+                    <h2 class="add-entry__title">Добавить новую запись</h2>
+                    <form class="add-entry__form">
+                        <div class="form-group">
+                            <label class="form-label">Дата</label>
+                            <input type="date" class="form-input">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Название</label>
+                            <input type="text" class="form-input" placeholder="Например: Изучение массивов в JS">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Описание</label>
+                            <textarea class="form-textarea" placeholder="Что нового ты изучил?"></textarea>
+                        </div>
+
+                        <button type="submit" class="button button--primary">Добавить запись</button>
+                    </form>
+                </section>
+
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="container">
+                <div class="footer__content">
+                    <p class="footer__copyright">© 2025 StudentDev Portfolio</p>
+                    <div class="footer__links">
+                        <a href="mailto:student@edu.ru" class="footer__link">student@edu.ru</a>
+                        <a href="https://github.com" class="footer__link">GitHub</a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+
+    </div>
+</body>
+</html>
