@@ -1,5 +1,8 @@
 {
   "dependencies": {
-    "express": "^5.2.1"
+    "cors": "^2.8.6",
+    "express": "^5.2.1",
+    "na": "^0.0.1-dev0",
+    "nanoid": "^5.1.6"
   }
 }
