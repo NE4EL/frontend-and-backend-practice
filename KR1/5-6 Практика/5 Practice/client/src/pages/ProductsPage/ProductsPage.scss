@@ -265,3 +265,34 @@ $successBg: rgba(34, 197, 94, 0.12);
   resize: vertical;
   min-height: 70px;
 }
+
+.card {
+  padding: 0;
+  overflow: hidden;
+
+  &__img-wrap {
+    width: 100%;
+    height: 180px;
+    overflow: hidden;
+    background: rgba(255, 255, 255, 0.03);
+  }
+
+  &__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.3s ease;
+
+    &:hover {
+      transform: scale(1.05);
+    }
+  }
+
+  &__body {
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+}

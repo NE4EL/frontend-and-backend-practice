@@ -8,7 +8,6 @@ let users = [
   { id: 3, name: 'White', price: 23095600},
 ];
 
-// Middleware для парсинга JSON
 app.use(express.json());
 
 // Главная страница
