@@ -33,7 +33,7 @@ io.on('connection', (socket) => {
 
     socket.on('newTask', (task) => {
         io.emit('taskAdded', task);
-        const payload = JSON.stringify({ title: 'Новая задача', body: task.text });
+        const payload = JSON.stringify({ title: '📝 Новая задача', body: task.text });
         subscriptions.forEach(sub => {
             webpush.sendNotification(sub, payload).catch(err => console.error('Push error:', err));
         });
@@ -45,7 +45,7 @@ io.on('connection', (socket) => {
         if (delay <= 0) return;
 
         const timeoutId = setTimeout(() => {
-            const payload = JSON.stringify({ title: '!!! Напоминание', body: text, reminderId: id });
+            const payload = JSON.stringify({ title: '🔔 Напоминание', body: text, reminderId: id });
             subscriptions.forEach(sub => {
                 webpush.sendNotification(sub, payload).catch(err => console.error('Push error:', err));
             });
@@ -85,7 +85,7 @@ app.post('/snooze', (req, res) => {
 
     const newDelay = 5 * 60 * 1000;
     const newTimeoutId = setTimeout(() => {
-        const payload = JSON.stringify({ title: 'Напоминание отложено', body: reminder.text, reminderId });
+        const payload = JSON.stringify({ title: '⏰ Напоминание отложено', body: reminder.text, reminderId });
         subscriptions.forEach(sub => {
             webpush.sendNotification(sub, payload).catch(err => console.error('Push error:', err));
         });

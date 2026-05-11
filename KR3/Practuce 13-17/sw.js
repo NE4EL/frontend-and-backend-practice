@@ -67,15 +67,25 @@ self.addEventListener('push', event => {
         try { data = event.data.json(); } catch (_) {}
     }
 
+    const isReminder = !!data.reminderId;
+
     const options = {
         body: data.body,
         icon: '/icons/favicon-128x128.png',
         badge: '/icons/favicon-48x48.png',
-        data: { reminderId: data.reminderId }
+        image: '/icons/favicon-256x256.png',
+        timestamp: Date.now(),
+        vibrate: [200, 100, 200],
+        requireInteraction: isReminder,
+        tag: isReminder ? `reminder-${data.reminderId}` : 'new-task',
+        data: { reminderId: data.reminderId, url: '/' }
     };
 
-    if (data.reminderId) {
-        options.actions = [{ action: 'snooze', title: 'Отложить на 5 минут' }];
+    if (isReminder) {
+        options.actions = [
+            { action: 'snooze', title: '⏰ Отложить на 5 минут' },
+            { action: 'close',  title: '✓ Закрыть' }
+        ];
     }
 
     event.waitUntil(self.registration.showNotification(data.title, options));
@@ -85,7 +95,9 @@ self.addEventListener('notificationclick', event => {
     const notification = event.notification;
     const action = event.action;
 
-    if (action === 'snooze') {
+    if (action === 'close') {
+        notification.close();
+    } else if (action === 'snooze') {
         const reminderId = notification.data.reminderId;
         event.waitUntil(
             fetch(`/snooze?reminderId=${reminderId}`, { method: 'POST' })
