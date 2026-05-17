@@ -1,0 +1,14 @@
+{
+  "name": "practice-22-load-balancing",
+  "version": "1.0.0",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "start:all": "PORT=4001 SERVER_ID=1 node server.js & PORT=4002 SERVER_ID=2 node server.js & PORT=4003 SERVER_ID=3 node server.js",
+    "docker:up": "docker compose up --build",
+    "docker:down": "docker compose down"
+  },
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}
