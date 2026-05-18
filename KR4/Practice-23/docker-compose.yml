@@ -6,12 +6,12 @@ services:
     environment:
       - NODE_ENV=production
       - USERS_SERVICE_URL=http://service_users:8000
-      - ORDERS_SERVICE_URL=http://service_orders:8000
+      - PRODUCTS_SERVICE_URL=http://service_products:8000
     networks:
       - app-network
     depends_on:
       - service_users
-      - service_orders
+      - service_products
 
   service_users:
     build: service_users
@@ -21,8 +21,8 @@ services:
     networks:
       - app-network
 
-  service_orders:
-    build: service_orders
+  service_products:
+    build: service_products
     environment:
       - NODE_ENV=production
       - PORT=8000
