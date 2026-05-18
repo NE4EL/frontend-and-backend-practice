@@ -1,262 +1,250 @@
-# KR4 — Базы данных, кэширование, балансировка и контейнеризация
+# KR4 — TechStore: базы данных, кэш, балансировка, контейнеры
 
-Контрольная работа №4 охватывает практики 19–23: подключение реляционных и NoSQL СУБД, кэширование через Redis, балансировку нагрузки через Nginx и контейнеризацию с Docker Compose.
+KR4 — это продолжение TechStore из KR2. Если в KR2 все данные хранились в памяти (массивы), то здесь каждая практика добавляет новый уровень инфраструктуры: реальные базы данных, кэш, балансировку нагрузки и контейнеризацию.
 
----
-
-## Быстрый старт
-
-### Необходимые сервисы
-
-| Сервис | Как запустить |
-|--------|--------------|
-| PostgreSQL | Уже установлен локально (Homebrew) |
-| MongoDB | `docker run -d --name mongo-kr4 -p 27017:27017 mongo:7` |
-| Redis | `docker run -d --name redis-kr4 -p 6379:6379 redis:alpine` |
-| Nginx (Practice 22) | Встроен в `docker compose up` |
-| Docker (Practice 23) | `docker compose up --build` |
+Все практики используют одно и то же приложение — интернет-магазин TechStore с теми же товарами, пользователями и правами доступа (user / seller / admin).
 
 ---
 
-## Практика 19 — PostgreSQL + Sequelize
+## Как связаны практики
 
-**Порт:** `3000`
-
-### Запуск
-```bash
-cd Practice-19
-npm install
-node server.js
-# База данных kr4_p19 создаётся автоматически
+```
+KR2 (в памяти)
+    │
+    ├── Practice 19 ── PostgreSQL (реляционная БД)
+    ├── Practice 20 ── MongoDB (документная БД)
+    ├── Practice 21 ── KR2 + Redis (кэширование запросов)
+    ├── Practice 22 ── Nginx (балансировка между серверами)
+    └── Practice 23 ── Docker Compose (разбивка на микросервисы)
 ```
 
-### Что реализовано
-- Подключение к PostgreSQL через Sequelize ORM
-- Автоматическое создание базы данных `kr4_p19` и таблицы `users` при старте
-- Сущность **User**: `id`, `first_name`, `last_name`, `age`, `created_at`, `updated_at`
+---
+
+## Practice 19 — PostgreSQL
+
+**Порт:** `3000` | **База данных:** PostgreSQL (локальная, Homebrew)
+
+### Что это
+
+KR2 хранил пользователей и товары в массивах — при перезапуске всё терялось. Practice 19 заменяет массивы на PostgreSQL: данные сохраняются в реальных таблицах и не исчезают после остановки сервера.
+
+### Как запустить
+
+```bash
+cd KR4/Practice-19
+npm install
+node server.js
+# База данных kr4_p19 и таблицы создаются автоматически
+```
+
+### Что внутри
+
+- Две таблицы: `users` и `products`
+- ORM Sequelize — работа с БД через JavaScript-объекты вместо SQL
+- При первом запуске автоматически создаётся БД и добавляются 5 стартовых товаров
+- Полная авторизация: регистрация, JWT-токены, роли (user / seller / admin)
 
 ### API
 
-| Метод | Путь | Описание |
-|-------|------|----------|
-| POST | `/api/users` | Создать пользователя |
-| GET | `/api/users` | Список всех пользователей |
-| GET | `/api/users/:id` | Получить по ID |
-| PATCH | `/api/users/:id` | Обновить |
-| DELETE | `/api/users/:id` | Удалить |
+```
+POST /api/auth/register   — регистрация
+POST /api/auth/login      — вход, получить токен
+POST /api/auth/refresh    — обновить токен
+GET  /api/auth/me         — текущий пользователь
 
-### Примеры
+GET    /api/products      — список товаров (все роли)
+GET    /api/products/:id  — товар по ID
+POST   /api/products      — добавить товар (seller, admin)
+PUT    /api/products/:id  — изменить товар (seller, admin)
+DELETE /api/products/:id  — удалить товар (admin)
+
+GET    /api/users         — список пользователей (admin)
+PUT    /api/users/:id     — изменить пользователя (admin)
+DELETE /api/users/:id     — заблокировать (admin)
+```
+
+### Пример
 
 ```bash
-# Создать пользователя
-curl -X POST http://localhost:3000/api/users \
+# Регистрация
+curl -X POST http://localhost:3000/api/auth/register \
   -H "Content-Type: application/json" \
-  -d '{"first_name":"Иван","last_name":"Иванов","age":25}'
+  -d '{"email":"admin@test.com","first_name":"Иван","last_name":"Петров","password":"pass123","role":"admin"}'
 
-# Получить список
-curl http://localhost:3000/api/users
-
-# Обновить
-curl -X PATCH http://localhost:3000/api/users/1 \
+# Вход
+curl -X POST http://localhost:3000/api/auth/login \
   -H "Content-Type: application/json" \
-  -d '{"age":26}'
+  -d '{"email":"admin@test.com","password":"pass123"}'
+# → { "accessToken": "...", "refreshToken": "..." }
 
-# Удалить
-curl -X DELETE http://localhost:3000/api/users/1
+# Получить товары
+curl http://localhost:3000/api/products \
+  -H "Authorization: Bearer <accessToken>"
 ```
-
-### Архитектура
-
-```
-Клиент → Express → Sequelize ORM → PostgreSQL (порт 5432)
-```
-
-Sequelize позволяет работать с PostgreSQL через модели JavaScript вместо SQL-запросов. При старте `sequelize.sync()` автоматически создаёт таблицу согласно модели.
 
 ---
 
-## Практика 20 — MongoDB + Mongoose
+## Practice 20 — MongoDB
 
-**Порт:** `3001`
+**Порт:** `3001` | **База данных:** MongoDB (Docker)
 
-### Запуск
+### Что это
+
+То же приложение TechStore, но вместо PostgreSQL — MongoDB. Разница в подходе к хранению: PostgreSQL требует заранее описанную схему (таблицы, столбцы, типы), MongoDB хранит документы в виде JSON и позволяет менять структуру на ходу.
+
+### Как запустить
+
 ```bash
 # 1. Запустить MongoDB
 docker run -d --name mongo-kr4 -p 27017:27017 mongo:7
 
 # 2. Запустить сервер
-cd Practice-20
+cd KR4/Practice-20
 npm install
 node server.js
 ```
 
-### Что реализовано
-- Подключение к MongoDB через Mongoose ODM
-- Документная схема с теми же полями что и в Practice 19
-- Автоматические `timestamps` (`created_at` / `updated_at`)
+### Чем отличается от Practice 19
 
-### API
+| | Practice 19 (PostgreSQL) | Practice 20 (MongoDB) |
+|--|---|---|
+| Тип данных | Таблицы со строгой схемой | Документы (JSON) |
+| ID | Число: `1, 2, 3` | Строка: `6a0a339a...` |
+| ORM / ODM | Sequelize | Mongoose |
+| Запросы | SQL под капотом | MongoDB API |
+| Гибкость схемы | Низкая | Высокая |
 
-| Метод | Путь | Описание |
-|-------|------|----------|
-| POST | `/api/users` | Создать |
-| GET | `/api/users` | Список (сортировка по дате) |
-| GET | `/api/users/:id` | По ID (MongoDB ObjectId) |
-| PATCH | `/api/users/:id` | Обновить |
-| DELETE | `/api/users/:id` | Удалить |
+### API — идентично Practice 19
 
-### Примеры
-
-```bash
-# Создать
-curl -X POST http://localhost:3001/api/users \
-  -H "Content-Type: application/json" \
-  -d '{"first_name":"Мария","last_name":"Петрова","age":30}'
-
-# Получить по ID (используй _id из ответа)
-curl http://localhost:3001/api/users/<_id>
-
-# Обновить
-curl -X PATCH http://localhost:3001/api/users/<_id> \
-  -H "Content-Type: application/json" \
-  -d '{"age":31}'
-```
-
-### PostgreSQL vs MongoDB
-
-| | PostgreSQL (P19) | MongoDB (P20) |
-|--|-----------------|---------------|
-| Тип | Реляционная | Документная NoSQL |
-| Схема | Жёсткая (заранее описана) | Гибкая (схема опциональна) |
-| ID | SERIAL (1, 2, 3...) | ObjectId (hex строка) |
-| Запросы | SQL | BSON / методы Mongoose |
-| Связи | JOIN через внешние ключи | Embedding / Reference |
+Те же маршруты `/api/auth/*`, `/api/products`, `/api/users` — только данные хранятся в MongoDB.
 
 ---
 
-## Практика 21 — Redis кэширование
+## Practice 21 — Redis кэширование
 
-**Порт:** `3002` | Основана на KR2 Practice 11-12 (Auth + RBAC)
+**Порт:** `3002` | **Кэш:** Redis (Docker)
 
-### Запуск
+### Что это
+
+Расширение KR2 Practice 11-12: добавляет слой кэширования через Redis. При частых одинаковых запросах (например, список товаров открывают 1000 раз в минуту) сервер не идёт в базу каждый раз, а отдаёт сохранённый ответ из Redis.
+
+### Как запустить
+
 ```bash
 # 1. Запустить Redis
 docker run -d --name redis-kr4 -p 6379:6379 redis:alpine
 
 # 2. Запустить сервер
-cd Practice-21
+cd KR4/Practice-21
 npm install
 node server.js
 ```
 
-### Что реализовано
-- Полная система аутентификации и RBAC из KR2 (bcrypt, JWT, роли)
-- Middleware `cacheMiddleware` — перехватывает GET-запросы, проверяет кэш
-- Функция `saveToCache` — сохраняет ответ в Redis после получения с сервера
-- Инвалидация кэша при мутациях (PUT/DELETE)
-
-### Кэшируемые маршруты
-
-| Маршрут | Метод | TTL | Ключ Redis |
-|---------|-------|-----|------------|
-| `/api/users` | GET | 60 сек | `users:all` |
-| `/api/users/:id` | GET | 60 сек | `users:<id>` |
-| `/api/products` | GET | 600 сек | `products:all` |
-| `/api/products/:id` | GET | 600 сек | `products:<id>` |
-
 ### Как работает кэш
 
 ```
-1й запрос:  GET /api/products → Redis (miss) → сервер → сохранить в Redis → { source: "server" }
-2й запрос:  GET /api/products → Redis (hit) → { source: "cache" }
-После PUT:  invalidateProductsCache() → Redis удаляет ключ → следующий GET снова идёт на сервер
+1-й запрос GET /api/products:
+  → Redis: нет данных (cache miss)
+  → Сервер считает данные
+  → Сохранить в Redis на 10 минут
+  → Ответ: { "source": "server", "data": [...] }
+
+2-й запрос GET /api/products:
+  → Redis: данные есть (cache hit)
+  → Ответ: { "source": "cache", "data": [...] }
+
+После PUT /api/products/:id:
+  → Redis: удалить ключ products:all и products:<id>
+  → Следующий GET снова пойдёт на сервер
 ```
 
-### Примеры
+### Кэшируемые маршруты
+
+| Маршрут | TTL | Ключ в Redis |
+|---------|-----|-------------|
+| `GET /api/products` | 10 минут | `products:all` |
+| `GET /api/products/:id` | 10 минут | `products:<id>` |
+| `GET /api/users` | 1 минута | `users:all` |
+| `GET /api/users/:id` | 1 минута | `users:<id>` |
+
+### Проверка кэша
 
 ```bash
-# Регистрация
-curl -X POST http://localhost:3002/api/auth/register \
-  -H "Content-Type: application/json" \
-  -d '{"email":"admin@test.com","first_name":"Admin","last_name":"User","password":"pass123","role":"admin"}'
+# После логина получить токен
+TOKEN="<accessToken>"
 
-# Логин → получить токен
-curl -X POST http://localhost:3002/api/auth/login \
-  -H "Content-Type: application/json" \
-  -d '{"email":"admin@test.com","password":"pass123"}'
+# Первый вызов — source: "server"
+curl http://localhost:3002/api/products -H "Authorization: Bearer $TOKEN"
 
-# 1й запрос (source: "server")
-curl http://localhost:3002/api/products \
-  -H "Authorization: Bearer <token>"
-
-# 2й запрос (source: "cache")
-curl http://localhost:3002/api/products \
-  -H "Authorization: Bearer <token>"
+# Второй вызов — source: "cache"
+curl http://localhost:3002/api/products -H "Authorization: Bearer $TOKEN"
 ```
 
 ---
 
-## Практика 22 — Балансировка нагрузки (Nginx)
+## Practice 22 — Nginx балансировка нагрузки
 
-**Порт:** `8080` (Nginx) → 3 backend-сервера
+**Порт:** `8080` (Nginx) → три backend-сервера
 
-### Запуск
+### Что это
+
+Один сервер TechStore не может обработать миллион запросов в секунду. Решение — запустить несколько одинаковых серверов и поставить перед ними Nginx, который равномерно распределяет запросы между ними.
+
+### Как запустить
+
 ```bash
-cd Practice-22
-npm install          # зависимости для Node.js backend
+cd KR4/Practice-22
+npm install        # зависимости для Node.js
 docker compose up --build
+
+# Остановить
+docker compose down
 ```
 
-### Что реализовано
-- Три идентичных backend-сервера (`backend-1`, `backend-2`, `backend-3`)
-- Nginx как балансировщик нагрузки (Round Robin)
-- `backend-3` настроен как резервный (`backup`)
-- Настройки отказоустойчивости: `max_fails=2 fail_timeout=30s`
-
-### Структура
+### Как устроено
 
 ```
-Клиент :8080
-    ↓
-  Nginx (Round Robin)
-   ├── backend1:3000 (SERVER_ID=1)
-   ├── backend2:3000 (SERVER_ID=2)
-   └── backend3:3000 (SERVER_ID=3, backup)
+Клиент → :8080 → Nginx (балансировщик)
+                    ├── backend-1:3000
+                    ├── backend-2:3000  (Round Robin)
+                    └── backend-3:3000  (резервный, включается если 1 и 2 недоступны)
 ```
 
-### nginx.conf
-
-```nginx
-upstream backend {
-    server backend1:3000 max_fails=2 fail_timeout=30s;
-    server backend2:3000 max_fails=2 fail_timeout=30s;
-    server backend3:3000 backup;
-}
-```
+- **Round Robin** — запросы распределяются по кругу: 1-й → backend-1, 2-й → backend-2, 3-й → backend-1...
+- **Backup** — backend-3 не получает запросы пока работают основные
+- **Отказоустойчивость** — если сервер не ответил 2 раза (`max_fails=2`), Nginx исключает его на 30 секунд (`fail_timeout=30s`)
 
 ### Тестирование
 
 ```bash
-# Запросы по кругу (Round Robin)
-for i in {1..6}; do curl -s http://localhost:8080/; echo; done
-# → backend-1, backend-2, backend-1, backend-2 ...
+# Видно чередование серверов
+for i in {1..4}; do curl -s http://localhost:8080/ | grep server; done
+# → backend-1
+# → backend-2
+# → backend-1
+# → backend-2
 
-# Остановить один бэкенд
+# Остановить один сервер
 docker compose stop backend1
 
-# Трафик идёт только через backend2
-curl http://localhost:8080/
+# Теперь весь трафик идёт через backend-2
+curl http://localhost:8080/api/products
 ```
 
 ---
 
-## Практика 23 — Docker Compose + Микросервисы
+## Practice 23 — Docker Compose + Микросервисы
 
 **Порт:** `8000` (API Gateway)
 
-### Запуск
+### Что это
+
+В предыдущих практиках TechStore — это один сервер, который делает всё: авторизацию, управление пользователями, управление товарами. В Practice 23 приложение разбито на три независимых сервиса, каждый в своём Docker-контейнере.
+
+### Как запустить
+
 ```bash
-cd Practice-23
+cd KR4/Practice-23
 docker compose up --build
 
 # Остановить
@@ -266,121 +254,88 @@ docker compose down
 ### Архитектура
 
 ```
-Клиент :8000
-    ↓
-API Gateway (Circuit Breaker + Aggregation)
-   ├── service_users:8000    (CRUD пользователей)
-   └── service_orders:8000   (CRUD заказов)
+Клиент → :8000
+              ↓
+        api_gateway          ← единственная точка входа
+        (Circuit Breaker)
+          /         \
+service_users     service_products
+(auth + RBAC)     (товары TechStore)
 ```
 
-Все сервисы в изолированной Docker-сети `app-network`. Только API Gateway доступен снаружи.
+- **service_users** — регистрация, логин, управление пользователями. Никто снаружи не может обратиться к нему напрямую.
+- **service_products** — CRUD товаров TechStore. Тоже закрыт снаружи.
+- **api_gateway** — принимает все запросы, проверяет авторизацию через service_users, проксирует к нужному сервису.
+
+Сервисы общаются по именам (`http://service_users:8000`) — Docker сам резолвит их в IP-адреса внутри сети.
 
 ### Circuit Breaker
 
-Защищает от каскадных сбоев. Три состояния:
-- **CLOSED** — нормальная работа
-- **OPEN** — сервис недоступен, сразу возвращает ошибку без ожидания
-- **HALF_OPEN** — тестовый запрос для проверки восстановления
+Защищает от каскадных сбоев. Если service_products упал, gateway не будет каждый раз ждать таймаута — после 3 ошибок он «открывается» и сразу возвращает понятное сообщение об ошибке. Через 10 секунд делает пробный запрос, и если сервис восстановился — снова начинает пропускать трафик.
 
-Параметры: `failureThreshold=3`, `recoveryTimeout=10s`
+```
+Нормальная работа:   CLOSED → запросы проходят
+После 3 ошибок:      OPEN   → сразу возвращает ошибку (без ожидания)
+Через 10 секунд:     HALF_OPEN → пробный запрос
+Если сервис ожил:    CLOSED → снова нормальная работа
+```
 
 ### API
 
-| Метод | Путь | Описание |
-|-------|------|----------|
-| GET | `/status` | Статус gateway и Circuit Breaker |
-| GET | `/users` | Список пользователей |
-| POST | `/users` | Создать пользователя |
-| GET | `/users/:id` | Пользователь по ID |
-| PUT | `/users/:id` | Обновить пользователя |
-| DELETE | `/users/:id` | Удалить |
-| GET | `/orders` | Список заказов (`?userId=N` для фильтрации) |
-| POST | `/orders` | Создать заказ |
-| GET | `/orders/:id` | Заказ по ID |
-| GET | `/users/:id/details` | Агрегация: пользователь + его заказы |
+```
+GET  /status                    — состояние gateway и Circuit Breaker
 
-### Примеры
+POST /api/auth/register         — регистрация
+POST /api/auth/login            — вход
+POST /api/auth/refresh          — обновить токен
+
+GET    /api/products            — список товаров
+GET    /api/products/:id        — товар по ID
+POST   /api/products            — добавить (seller, admin)
+PUT    /api/products/:id        — изменить (seller, admin)
+DELETE /api/products/:id        — удалить (admin)
+
+GET    /api/users               — список пользователей (admin)
+PUT    /api/users/:id           — изменить (admin)
+DELETE /api/users/:id           — заблокировать (admin)
+
+GET    /api/users/:id/overview  — агрегация: пользователь + все товары (admin)
+```
+
+### Пример работы
 
 ```bash
-# Статус системы
-curl http://localhost:8000/status
-
-# Создать пользователя
-curl -X POST http://localhost:8000/users \
+# Регистрация через gateway (он проксирует в service_users)
+curl -X POST http://localhost:8000/api/auth/register \
   -H "Content-Type: application/json" \
-  -d '{"name":"Иван Иванов","email":"ivan@example.com"}'
+  -d '{"email":"admin@ts.com","first_name":"Иван","last_name":"Петров","password":"pass123","role":"admin"}'
 
-# Создать заказ
-curl -X POST http://localhost:8000/orders \
+# Вход
+curl -X POST http://localhost:8000/api/auth/login \
   -H "Content-Type: application/json" \
-  -d '{"userId":1,"product":"Ноутбук","price":75000}'
+  -d '{"email":"admin@ts.com","password":"pass123"}'
 
-# Агрегация: пользователь + все его заказы одним запросом
-curl http://localhost:8000/users/1/details
-```
+# Товары (gateway проверяет токен через service_users, затем запрашивает service_products)
+curl http://localhost:8000/api/products \
+  -H "Authorization: Bearer <accessToken>"
 
-### Тестирование Circuit Breaker
+# Проверить Circuit Breaker
+docker compose stop service_products
+curl http://localhost:8000/api/products -H "Authorization: Bearer <accessToken>"
+# → {"error": "products service temporarily unavailable"}
 
-```bash
-# Остановить сервис пользователей
-docker compose stop service_users
-
-# Первые 3 запроса — реальные ошибки
-curl http://localhost:8000/users
-# → {"error": "request failed, reason: ..."}
-
-# После 3 ошибок — Circuit Breaker открывается
-curl http://localhost:8000/users
-# → {"error": "users service temporarily unavailable"}
-
-# Проверить состояние (state: "OPEN")
 curl http://localhost:8000/status
+# → {"circuitBreakers": [{"name": "products", "state": "OPEN", "failures": 3}]}
 ```
-
-### docker-compose.yml ключевые моменты
-
-```yaml
-services:
-  api_gateway:
-    build: api_gateway
-    ports:
-      - "8000:8000"        # только gateway доступен снаружи
-    networks:
-      - app-network
-
-  service_users:
-    build: service_users   # порт не проброшен — закрыт снаружи
-    networks:
-      - app-network
-```
-
-Сервисы общаются между собой по имени: `http://service_users:8000` — Docker резолвит в IP контейнера.
 
 ---
 
-## Сравнение технологий
+## Запуск всех сервисов
 
-| | Practice 19 | Practice 20 | Practice 21 | Practice 22 | Practice 23 |
-|--|-------------|-------------|-------------|-------------|-------------|
-| **Тема** | PostgreSQL | MongoDB | Redis Cache | Nginx LB | Docker |
-| **Порт** | 3000 | 3001 | 3002 | 8080 | 8000 |
-| **Зависимости** | Локальный PG | Docker mongo | Docker redis | Docker nginx | Docker Compose |
-| **Данные** | Реляционные | Документы | In-memory | In-memory | In-memory |
-
----
-
-## Полезные команды Docker
-
-```bash
-# Посмотреть запущенные контейнеры
-docker ps
-
-# Логи сервиса
-docker compose logs -f api_gateway
-
-# Зайти внутрь контейнера
-docker compose exec service_users sh
-
-# Остановить и удалить всё
-docker compose down -v
-```
+| Практика | Команда | Порт |
+|----------|---------|------|
+| Practice 19 | `cd Practice-19 && node server.js` | 3000 |
+| Practice 20 | `docker run -d --name mongo-kr4 -p 27017:27017 mongo:7` → `cd Practice-20 && node server.js` | 3001 |
+| Practice 21 | `docker run -d --name redis-kr4 -p 6379:6379 redis:alpine` → `cd Practice-21 && node server.js` | 3002 |
+| Practice 22 | `cd Practice-22 && docker compose up --build` | 8080 |
+| Practice 23 | `cd Practice-23 && docker compose up --build` | 8000 |
