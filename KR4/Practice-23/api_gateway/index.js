@@ -1,10 +1,12 @@
 const express = require('express');
 const fetch   = require('node-fetch');
+const path    = require('path');
 const swaggerJsdoc = require('swagger-jsdoc');
 const swaggerUi    = require('swagger-ui-express');
 
 const app = express();
 app.use(express.json());
+app.use(express.static(path.join(__dirname, 'public')));
 
 const PORT                = process.env.PORT                 || 8000;
 const USERS_SERVICE_URL   = process.env.USERS_SERVICE_URL    || 'http://service_users:8000';
@@ -300,6 +302,7 @@ app.get('/status', (req, res) => {
 app.post('/api/auth/register', (req, res) => proxy(usersBreaker, `${USERS_SERVICE_URL}/auth/register`, req, res));
 app.post('/api/auth/login',    (req, res) => proxy(usersBreaker, `${USERS_SERVICE_URL}/auth/login`,    req, res));
 app.post('/api/auth/refresh',  (req, res) => proxy(usersBreaker, `${USERS_SERVICE_URL}/auth/refresh`,  req, res));
+app.get('/api/auth/me',        authMiddleware, (req, res) => res.json({ user: req.user }));
 
 // ===== USERS ROUTES (admin only) =====
 app.get('/api/users',     authMiddleware, roleMiddleware(['admin']), (req, res) => proxy(usersBreaker, `${USERS_SERVICE_URL}/users`,              req, res));
