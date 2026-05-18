@@ -3,6 +3,8 @@ const { Sequelize, DataTypes } = require('sequelize');
 const { Client } = require('pg');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const swaggerJsdoc = require('swagger-jsdoc');
+const swaggerUi = require('swagger-ui-express');
 
 const app = express();
 app.use(express.json());
@@ -20,6 +22,38 @@ const REFRESH_EXPIRES_IN = '7d';
 const ROLES = { USER: 'user', SELLER: 'seller', ADMIN: 'admin' };
 
 const refreshTokens = new Set();
+
+const swaggerSpec = swaggerJsdoc({
+    definition: {
+        openapi: '3.0.0',
+        info: { title: 'TechStore API — Practice 19 (PostgreSQL)', version: '1.0.0', description: 'TechStore с хранением данных в PostgreSQL. Авторизация через JWT.' },
+        servers: [{ url: `http://localhost:3000` }],
+        components: {
+            securitySchemes: { bearerAuth: { type: 'http', scheme: 'bearer', bearerFormat: 'JWT' } },
+            schemas: {
+                RegisterBody: { type: 'object', required: ['email','first_name','last_name','password'], properties: {
+                    email:      { type: 'string', example: 'admin@test.com' },
+                    first_name: { type: 'string', example: 'Иван' },
+                    last_name:  { type: 'string', example: 'Петров' },
+                    password:   { type: 'string', example: 'pass123' },
+                    role:       { type: 'string', enum: ['user','seller','admin'], example: 'admin' },
+                }},
+                LoginBody: { type: 'object', required: ['email','password'], properties: {
+                    email:    { type: 'string', example: 'admin@test.com' },
+                    password: { type: 'string', example: 'pass123' },
+                }},
+                ProductBody: { type: 'object', required: ['title','category','description','price'], properties: {
+                    title:       { type: 'string',  example: 'iPhone 15 Pro' },
+                    category:    { type: 'string',  example: 'Смартфоны' },
+                    description: { type: 'string',  example: 'Apple iPhone 15 Pro 256GB' },
+                    price:       { type: 'number',  example: 89990 },
+                }},
+            },
+        },
+    },
+    apis: ['./server.js'],
+});
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 async function ensureDatabase() {
     const client = new Client({ user: DB_USER, password: DB_PASS, host: DB_HOST, database: 'postgres', port: 5432 });
@@ -79,6 +113,22 @@ function roleMiddleware(allowedRoles) {
 }
 
 // ===== AUTH =====
+/**
+ * @swagger
+ * /api/auth/register:
+ *   post:
+ *     summary: Регистрация
+ *     tags: [Auth]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/RegisterBody'
+ *     responses:
+ *       201: { description: Пользователь создан }
+ *       400: { description: Ошибка валидации }
+ */
 app.post('/api/auth/register', async (req, res) => {
     const { email, first_name, last_name, password, role } = req.body;
     if (!email || !first_name || !last_name || !password) return res.status(400).json({ error: 'Все поля обязательны' });
@@ -92,6 +142,22 @@ app.post('/api/auth/register', async (req, res) => {
     }
 });
 
+/**
+ * @swagger
+ * /api/auth/login:
+ *   post:
+ *     summary: Вход (получить токен)
+ *     tags: [Auth]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/LoginBody'
+ *     responses:
+ *       200: { description: "{ accessToken, refreshToken }" }
+ *       401: { description: Неверные данные }
+ */
 app.post('/api/auth/login', async (req, res) => {
     const { email, password } = req.body;
     if (!email || !password) return res.status(400).json({ error: 'email и password обязательны' });
@@ -104,6 +170,23 @@ app.post('/api/auth/login', async (req, res) => {
     res.json({ accessToken, refreshToken });
 });
 
+/**
+ * @swagger
+ * /api/auth/refresh:
+ *   post:
+ *     summary: Обновить токен
+ *     tags: [Auth]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               refreshToken: { type: string }
+ *     responses:
+ *       200: { description: Новая пара токенов }
+ */
 app.post('/api/auth/refresh', (req, res) => {
     const { refreshToken } = req.body;
     if (!refreshToken || !refreshTokens.has(refreshToken)) return res.status(401).json({ error: 'Invalid refresh token' });
@@ -122,6 +205,17 @@ app.post('/api/auth/refresh', (req, res) => {
     }
 });
 
+/**
+ * @swagger
+ * /api/auth/me:
+ *   get:
+ *     summary: Текущий пользователь
+ *     tags: [Auth]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200: { description: Данные текущего пользователя }
+ */
 app.get('/api/auth/me', authMiddleware, async (req, res) => {
     const user = await User.findByPk(req.user.sub, { attributes: ['id', 'email', 'first_name', 'last_name', 'role'] });
     if (!user) return res.status(404).json({ error: 'User not found' });
@@ -129,11 +223,73 @@ app.get('/api/auth/me', authMiddleware, async (req, res) => {
 });
 
 // ===== USERS (admin) =====
+/**
+ * @swagger
+ * /api/users:
+ *   get:
+ *     summary: Список пользователей (только admin)
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200: { description: Список пользователей }
+ *       403: { description: Нет прав }
+ */
 app.get('/api/users', authMiddleware, roleMiddleware([ROLES.ADMIN]), async (req, res) => {
     const users = await User.findAll({ attributes: { exclude: ['hashed_password'] }, order: [['created_at', 'DESC']] });
     res.json(users);
 });
 
+/**
+ * @swagger
+ * /api/users/{id}:
+ *   get:
+ *     summary: Пользователь по ID (admin)
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema: { type: integer }
+ *     responses:
+ *       200: { description: Данные пользователя }
+ *   put:
+ *     summary: Изменить пользователя (admin)
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema: { type: integer }
+ *     requestBody:
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               first_name: { type: string }
+ *               last_name:  { type: string }
+ *               role:       { type: string, enum: [user, seller, admin] }
+ *               blocked:    { type: boolean }
+ *     responses:
+ *       200: { description: Пользователь обновлён }
+ *   delete:
+ *     summary: Заблокировать пользователя (admin)
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema: { type: integer }
+ *     responses:
+ *       200: { description: Пользователь заблокирован }
+ */
 app.get('/api/users/:id', authMiddleware, roleMiddleware([ROLES.ADMIN]), async (req, res) => {
     const user = await User.findByPk(req.params.id, { attributes: { exclude: ['hashed_password'] } });
     if (!user) return res.status(404).json({ error: 'User not found' });
@@ -161,11 +317,82 @@ app.delete('/api/users/:id', authMiddleware, roleMiddleware([ROLES.ADMIN]), asyn
 });
 
 // ===== PRODUCTS =====
+/**
+ * @swagger
+ * /api/products:
+ *   get:
+ *     summary: Список товаров
+ *     tags: [Products]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200: { description: Список товаров }
+ *   post:
+ *     summary: Добавить товар (seller, admin)
+ *     tags: [Products]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/ProductBody'
+ *     responses:
+ *       201: { description: Товар создан }
+ *       403: { description: Нет прав }
+ */
 app.get('/api/products', authMiddleware, async (req, res) => {
     const products = await Product.findAll({ order: [['created_at', 'DESC']] });
     res.json(products);
 });
 
+/**
+ * @swagger
+ * /api/products/{id}:
+ *   get:
+ *     summary: Товар по ID
+ *     tags: [Products]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema: { type: integer }
+ *     responses:
+ *       200: { description: Данные товара }
+ *       404: { description: Не найден }
+ *   put:
+ *     summary: Изменить товар (seller, admin)
+ *     tags: [Products]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema: { type: integer }
+ *     requestBody:
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/ProductBody'
+ *     responses:
+ *       200: { description: Товар обновлён }
+ *   delete:
+ *     summary: Удалить товар (admin)
+ *     tags: [Products]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema: { type: integer }
+ *     responses:
+ *       204: { description: Удалён }
+ */
 app.get('/api/products/:id', authMiddleware, async (req, res) => {
     const product = await Product.findByPk(req.params.id);
     if (!product) return res.status(404).json({ error: 'Product not found' });

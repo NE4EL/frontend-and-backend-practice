@@ -1,5 +1,7 @@
 const express = require('express');
 const fetch   = require('node-fetch');
+const swaggerJsdoc = require('swagger-jsdoc');
+const swaggerUi    = require('swagger-ui-express');
 
 const app = express();
 app.use(express.json());
@@ -92,6 +94,202 @@ async function proxy(breaker, targetUrl, req, res) {
         res.status(503).json({ error: err.message });
     }
 }
+
+const swaggerSpec = swaggerJsdoc({
+    definition: {
+        openapi: '3.0.0',
+        info: { title: 'TechStore API Gateway — Practice 23 (Docker Microservices)', version: '1.0.0', description: 'Единая точка входа TechStore. Все запросы проходят через этот gateway, который маршрутизирует их к service_users или service_products. Реализован Circuit Breaker.' },
+        servers: [{ url: 'http://localhost:8000' }],
+        components: {
+            securitySchemes: { bearerAuth: { type: 'http', scheme: 'bearer', bearerFormat: 'JWT' } },
+            schemas: {
+                RegisterBody: { type: 'object', required: ['email','first_name','last_name','password'], properties: {
+                    email:      { type: 'string', example: 'admin@test.com' },
+                    first_name: { type: 'string', example: 'Иван' },
+                    last_name:  { type: 'string', example: 'Петров' },
+                    password:   { type: 'string', example: 'pass123' },
+                    role:       { type: 'string', enum: ['user','seller','admin'], example: 'admin' },
+                }},
+                LoginBody: { type: 'object', required: ['email','password'], properties: {
+                    email:    { type: 'string', example: 'admin@test.com' },
+                    password: { type: 'string', example: 'pass123' },
+                }},
+                ProductBody: { type: 'object', required: ['title','category','description','price'], properties: {
+                    title:       { type: 'string', example: 'iPhone 15 Pro' },
+                    category:    { type: 'string', example: 'Смартфоны' },
+                    description: { type: 'string', example: 'Apple iPhone 15 Pro 256GB' },
+                    price:       { type: 'number', example: 89990 },
+                }},
+            },
+        },
+    },
+    apis: ['./index.js'],
+});
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
+/**
+ * @swagger
+ * /status:
+ *   get:
+ *     summary: Состояние gateway и Circuit Breaker
+ *     tags: [Gateway]
+ *     responses:
+ *       200: { description: "{ gateway, circuitBreakers: [{name, state, failures}] }" }
+ * /api/auth/register:
+ *   post:
+ *     summary: Регистрация → service_users
+ *     tags: [Auth]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/RegisterBody'
+ *     responses:
+ *       201: { description: Пользователь создан }
+ * /api/auth/login:
+ *   post:
+ *     summary: Вход → service_users
+ *     tags: [Auth]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/LoginBody'
+ *     responses:
+ *       200: { description: "{ accessToken, refreshToken }" }
+ * /api/products:
+ *   get:
+ *     summary: Список товаров → service_products
+ *     tags: [Products]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200: { description: Список товаров }
+ *       503: { description: Circuit Breaker открыт }
+ *   post:
+ *     summary: Добавить товар (seller, admin) → service_products
+ *     tags: [Products]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/ProductBody'
+ *     responses:
+ *       201: { description: Товар создан }
+ * /api/products/{id}:
+ *   get:
+ *     summary: Товар по ID → service_products
+ *     tags: [Products]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema: { type: integer }
+ *     responses:
+ *       200: { description: Данные товара }
+ *   put:
+ *     summary: Изменить товар (seller, admin)
+ *     tags: [Products]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema: { type: integer }
+ *     requestBody:
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/ProductBody'
+ *     responses:
+ *       200: { description: Обновлён }
+ *   delete:
+ *     summary: Удалить товар (admin)
+ *     tags: [Products]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema: { type: integer }
+ *     responses:
+ *       204: { description: Удалён }
+ * /api/users:
+ *   get:
+ *     summary: Список пользователей (admin) → service_users
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200: { description: Список пользователей }
+ * /api/users/{id}:
+ *   get:
+ *     summary: Пользователь по ID (admin)
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema: { type: integer }
+ *     responses:
+ *       200: { description: Данные пользователя }
+ *   put:
+ *     summary: Изменить пользователя (admin)
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema: { type: integer }
+ *     requestBody:
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               role: { type: string, enum: [user, seller, admin] }
+ *               blocked: { type: boolean }
+ *     responses:
+ *       200: { description: Обновлён }
+ *   delete:
+ *     summary: Заблокировать пользователя (admin)
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema: { type: integer }
+ *     responses:
+ *       200: { description: Заблокирован }
+ * /api/users/{id}/overview:
+ *   get:
+ *     summary: "Агрегация: пользователь + все товары (admin)"
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema: { type: integer }
+ *     responses:
+ *       200: { description: "{ user: {...}, totalProducts: N, products: [...] }" }
+ */
 
 // ===== STATUS =====
 app.get('/status', (req, res) => {

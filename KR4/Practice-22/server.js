@@ -1,10 +1,22 @@
 const express = require('express');
+const swaggerJsdoc = require('swagger-jsdoc');
+const swaggerUi    = require('swagger-ui-express');
 
 const app = express();
 app.use(express.json());
 
 const PORT      = process.env.PORT      || 3000;
 const SERVER_ID = process.env.SERVER_ID || '1';
+
+const swaggerSpec = swaggerJsdoc({
+    definition: {
+        openapi: '3.0.0',
+        info: { title: `TechStore API — Practice 22 (Nginx LB, backend-${SERVER_ID})`, version: '1.0.0', description: 'Один из backend-серверов за Nginx балансировщиком. Каждый запрос отвечает с указанием имени сервера.' },
+        servers: [{ url: `http://localhost:${PORT}` }, { url: 'http://localhost:8080', description: 'Через Nginx (docker compose)' }],
+    },
+    apis: ['./server.js'],
+});
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 const products = [
     { id: 1, title: 'iPhone 15 Pro',    category: 'Смартфоны',  description: 'Apple iPhone 15 Pro 256GB',          price: 89990 },
@@ -14,6 +26,41 @@ const products = [
     { id: 5, title: 'Samsung 4K TV',    category: 'Телевизоры', description: 'Samsung QLED 55" 4K Smart TV',       price: 79990 },
 ];
 
+/**
+ * @swagger
+ * /:
+ *   get:
+ *     summary: Информация о сервере
+ *     tags: [Info]
+ *     responses:
+ *       200:
+ *         description: "{ message, server, port } — показывает какой backend ответил"
+ * /api/products:
+ *   get:
+ *     summary: Список товаров TechStore
+ *     tags: [Products]
+ *     responses:
+ *       200:
+ *         description: "{ server: backend-N, data: [...] } — server показывает кто ответил"
+ * /api/products/{id}:
+ *   get:
+ *     summary: Товар по ID
+ *     tags: [Products]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema: { type: integer }
+ *     responses:
+ *       200: { description: Данные товара }
+ *       404: { description: Не найден }
+ * /health:
+ *   get:
+ *     summary: Health check (используется Nginx)
+ *     tags: [Info]
+ *     responses:
+ *       200: { description: "{ status: ok, server: backend-N }" }
+ */
 app.get('/', (req, res) => {
     res.json({ message: 'TechStore API', server: `backend-${SERVER_ID}`, port: PORT });
 });

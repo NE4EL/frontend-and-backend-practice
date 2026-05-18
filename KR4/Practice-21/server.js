@@ -3,6 +3,8 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const cors = require('cors');
 const { createClient } = require('redis');
+const swaggerJsdoc = require('swagger-jsdoc');
+const swaggerUi    = require('swagger-ui-express');
 
 const app = express();
 app.use(express.json());
@@ -15,6 +17,191 @@ const ACCESS_EXPIRES_IN  = '15m';
 const REFRESH_EXPIRES_IN = '7d';
 const USERS_CACHE_TTL    = 60;   // 1 минута
 const PRODUCTS_CACHE_TTL = 600;  // 10 минут
+
+const swaggerSpec = swaggerJsdoc({
+    definition: {
+        openapi: '3.0.0',
+        info: { title: 'TechStore API — Practice 21 (Redis Cache)', version: '1.0.0', description: 'TechStore с кэшированием через Redis. Ответ содержит поле "source": "server" или "cache".' },
+        servers: [{ url: 'http://localhost:3002' }],
+        components: {
+            securitySchemes: { bearerAuth: { type: 'http', scheme: 'bearer', bearerFormat: 'JWT' } },
+            schemas: {
+                RegisterBody: { type: 'object', required: ['email','first_name','last_name','password'], properties: {
+                    email:      { type: 'string', example: 'admin@test.com' },
+                    first_name: { type: 'string', example: 'Иван' },
+                    last_name:  { type: 'string', example: 'Петров' },
+                    password:   { type: 'string', example: 'pass123' },
+                    role:       { type: 'string', enum: ['user','seller','admin'], example: 'admin' },
+                }},
+                LoginBody: { type: 'object', required: ['email','password'], properties: {
+                    email:    { type: 'string', example: 'admin@test.com' },
+                    password: { type: 'string', example: 'pass123' },
+                }},
+                ProductBody: { type: 'object', required: ['title','category','description','price'], properties: {
+                    title:       { type: 'string', example: 'iPhone 15 Pro' },
+                    category:    { type: 'string', example: 'Смартфоны' },
+                    description: { type: 'string', example: 'Apple iPhone 15 Pro 256GB' },
+                    price:       { type: 'number', example: 89990 },
+                }},
+            },
+        },
+    },
+    apis: ['./server.js'],
+});
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
+/**
+ * @swagger
+ * /api/auth/register:
+ *   post:
+ *     summary: Регистрация
+ *     tags: [Auth]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/RegisterBody'
+ *     responses:
+ *       201: { description: Пользователь создан }
+ * /api/auth/login:
+ *   post:
+ *     summary: Вход (получить токен)
+ *     tags: [Auth]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/LoginBody'
+ *     responses:
+ *       200: { description: "{ accessToken, refreshToken }" }
+ * /api/auth/me:
+ *   get:
+ *     summary: Текущий пользователь
+ *     tags: [Auth]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200: { description: Данные пользователя }
+ * /api/products:
+ *   get:
+ *     summary: "Список товаров (кэш 10 мин — смотри поле source в ответе)"
+ *     tags: [Products]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: "{ source: server|cache, data: [...] }"
+ *   post:
+ *     summary: Добавить товар (seller, admin) — сбрасывает кэш
+ *     tags: [Products]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/ProductBody'
+ *     responses:
+ *       201: { description: Товар создан }
+ * /api/products/{id}:
+ *   get:
+ *     summary: "Товар по ID (кэш 10 мин)"
+ *     tags: [Products]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema: { type: string }
+ *     responses:
+ *       200: { description: "{ source: server|cache, data: {...} }" }
+ *   put:
+ *     summary: Изменить товар (seller, admin) — сбрасывает кэш
+ *     tags: [Products]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema: { type: string }
+ *     requestBody:
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/ProductBody'
+ *     responses:
+ *       200: { description: Товар обновлён }
+ *   delete:
+ *     summary: Удалить товар (admin) — сбрасывает кэш
+ *     tags: [Products]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema: { type: string }
+ *     responses:
+ *       204: { description: Удалён }
+ * /api/users:
+ *   get:
+ *     summary: "Список пользователей (admin, кэш 1 мин)"
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200: { description: "{ source: server|cache, data: [...] }" }
+ * /api/users/{id}:
+ *   get:
+ *     summary: "Пользователь по ID (admin, кэш 1 мин)"
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema: { type: string }
+ *     responses:
+ *       200: { description: Данные пользователя }
+ *   put:
+ *     summary: Изменить пользователя (admin) — сбрасывает кэш
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema: { type: string }
+ *     requestBody:
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               role: { type: string, enum: [user, seller, admin] }
+ *               blocked: { type: boolean }
+ *     responses:
+ *       200: { description: Обновлён }
+ *   delete:
+ *     summary: Заблокировать пользователя (admin)
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema: { type: string }
+ *     responses:
+ *       200: { description: Заблокирован }
+ */
 
 let users    = [];
 let products = [

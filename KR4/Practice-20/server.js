@@ -2,6 +2,8 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bcrypt   = require('bcrypt');
 const jwt      = require('jsonwebtoken');
+const swaggerJsdoc = require('swagger-jsdoc');
+const swaggerUi    = require('swagger-ui-express');
 
 const app = express();
 app.use(express.json());
@@ -16,6 +18,38 @@ const REFRESH_EXPIRES_IN = '7d';
 const ROLES = { USER: 'user', SELLER: 'seller', ADMIN: 'admin' };
 
 const refreshTokens = new Set();
+
+const swaggerSpec = swaggerJsdoc({
+    definition: {
+        openapi: '3.0.0',
+        info: { title: 'TechStore API — Practice 20 (MongoDB)', version: '1.0.0', description: 'TechStore с хранением данных в MongoDB. Авторизация через JWT.' },
+        servers: [{ url: 'http://localhost:3001' }],
+        components: {
+            securitySchemes: { bearerAuth: { type: 'http', scheme: 'bearer', bearerFormat: 'JWT' } },
+            schemas: {
+                RegisterBody: { type: 'object', required: ['email','first_name','last_name','password'], properties: {
+                    email:      { type: 'string', example: 'admin@test.com' },
+                    first_name: { type: 'string', example: 'Иван' },
+                    last_name:  { type: 'string', example: 'Петров' },
+                    password:   { type: 'string', example: 'pass123' },
+                    role:       { type: 'string', enum: ['user','seller','admin'], example: 'admin' },
+                }},
+                LoginBody: { type: 'object', required: ['email','password'], properties: {
+                    email:    { type: 'string', example: 'admin@test.com' },
+                    password: { type: 'string', example: 'pass123' },
+                }},
+                ProductBody: { type: 'object', required: ['title','category','description','price'], properties: {
+                    title:       { type: 'string', example: 'iPhone 15 Pro' },
+                    category:    { type: 'string', example: 'Смартфоны' },
+                    description: { type: 'string', example: 'Apple iPhone 15 Pro 256GB' },
+                    price:       { type: 'number', example: 89990 },
+                }},
+            },
+        },
+    },
+    apis: ['./server.js'],
+});
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // ===== СХЕМЫ =====
 const userSchema = new mongoose.Schema({
@@ -64,6 +98,157 @@ function roleMiddleware(allowedRoles) {
 }
 
 // ===== AUTH =====
+/**
+ * @swagger
+ * /api/auth/register:
+ *   post:
+ *     summary: Регистрация
+ *     tags: [Auth]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/RegisterBody'
+ *     responses:
+ *       201: { description: Пользователь создан }
+ * /api/auth/login:
+ *   post:
+ *     summary: Вход (получить токен)
+ *     tags: [Auth]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/LoginBody'
+ *     responses:
+ *       200: { description: "{ accessToken, refreshToken }" }
+ * /api/auth/me:
+ *   get:
+ *     summary: Текущий пользователь
+ *     tags: [Auth]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200: { description: Данные пользователя }
+ * /api/products:
+ *   get:
+ *     summary: Список товаров
+ *     tags: [Products]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200: { description: Список товаров }
+ *   post:
+ *     summary: Добавить товар (seller, admin)
+ *     tags: [Products]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/ProductBody'
+ *     responses:
+ *       201: { description: Товар создан }
+ * /api/products/{id}:
+ *   get:
+ *     summary: Товар по ID
+ *     tags: [Products]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema: { type: string }
+ *     responses:
+ *       200: { description: Данные товара }
+ *   put:
+ *     summary: Изменить товар (seller, admin)
+ *     tags: [Products]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema: { type: string }
+ *     requestBody:
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/ProductBody'
+ *     responses:
+ *       200: { description: Товар обновлён }
+ *   delete:
+ *     summary: Удалить товар (admin)
+ *     tags: [Products]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema: { type: string }
+ *     responses:
+ *       204: { description: Удалён }
+ * /api/users:
+ *   get:
+ *     summary: Список пользователей (admin)
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200: { description: Список пользователей }
+ * /api/users/{id}:
+ *   get:
+ *     summary: Пользователь по ID (admin)
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema: { type: string }
+ *     responses:
+ *       200: { description: Данные пользователя }
+ *   put:
+ *     summary: Изменить пользователя (admin)
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema: { type: string }
+ *     requestBody:
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               role: { type: string, enum: [user, seller, admin] }
+ *               blocked: { type: boolean }
+ *     responses:
+ *       200: { description: Обновлён }
+ *   delete:
+ *     summary: Заблокировать (admin)
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema: { type: string }
+ *     responses:
+ *       200: { description: Заблокирован }
+ */
 app.post('/api/auth/register', async (req, res) => {
     const { email, first_name, last_name, password, role } = req.body;
     if (!email || !first_name || !last_name || !password) return res.status(400).json({ error: 'Все поля обязательны' });
