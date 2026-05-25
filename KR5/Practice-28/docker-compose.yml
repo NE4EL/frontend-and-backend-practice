@@ -1,0 +1,36 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: kr5-postgres
+    environment:
+      POSTGRES_DB:       kr5_techstore
+      POSTGRES_USER:     postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  backend:
+    build: ./backend
+    container_name: kr5-backend
+    ports:
+      - "3000:3000"
+    environment:
+      DB_HOST:     postgres
+      DB_NAME:     kr5_techstore
+      DB_USER:     postgres
+      DB_PASS:     postgres
+      DB_DIALECT:  postgres
+      ACCESS_SECRET:  techstore_access_secret_kr5
+      REFRESH_SECRET: techstore_refresh_secret_kr5
+      PORT: 3000
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+volumes:
+  pgdata:
